@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- xmlns:th=声明这么网页是动态的，使用的是thymeleaf模板引擎 -->
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+    <title>Teacher</title>
+</head>
+<body>
+    <!-- th: 这是thymeleaf的语法， ${var name} 这是取出变量-->
+    <p th:text="${name}"></p>
+    <p th:text="${age}"></p>
+</body>
+</html>
