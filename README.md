@@ -357,3 +357,18 @@ ssh-keygen -t rsa -C "nihaohoukx@163.com"
 ```shell
 git clone https://git.nowcoder.com/814594056/community.git
 ```
+#### 创建tag
+```shell
+# 创建lightweight类型的tag：
+git tag v1.4-lw
+# 创建annotated类型的tag：
+git tag -a v1.4 -m "my version 1.4"
+
+git tag　# 列出所有版本号
+git checkout　# +某版本号
+```
+#### release和tag区别
+- 标签是git中的概念，而release则是Github、码云等源码托管商所提供的更高层的概念。
+- 也就是说git本身是没有release这个概念的，只有tag。
+- 两者之间的关系则是，release基于tag，为tag添加更丰富的信息，一般是编译好的文件。
+创建tag
