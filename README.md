@@ -363,9 +363,19 @@ git clone https://git.nowcoder.com/814594056/community.git
 git tag v1.4-lw
 # 创建annotated类型的tag：
 git tag -a v1.4 -m "my version 1.4"
+git checkout  # +某版本号
 
-git tag　# 列出所有版本号
-git checkout　# +某版本号
+# 加上-a参数来创建一个带备注的tag，备注信息由-m指定
+git tag -a tagName -m "my tag"
+
+git tag     # 列出已有的tag
+git log     # 查看所有的commit提交记录
+git show    # 查看提交的详情
+
+git tag -a v1.2 9fceb02 -m "my tag"  # 给指定的某个commit(Hash)号加tag
+
+git push origin v1.0    # 将tag同步到远程服务器
+git push origin --tags  # 推送所有：
 ```
 #### release和tag区别
 - 标签是git中的概念，而release则是Github、码云等源码托管商所提供的更高层的概念。
