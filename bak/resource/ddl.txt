@@ -1,0 +1,61 @@
+
+-- Drop table
+
+-- DROP TABLE public.tb_event;
+
+CREATE TABLE public.tb_event (
+	event_id varchar(64) NOT NULL DEFAULT gen_random_uuid(),
+	event_type int4 NULL,
+	event_time timestamp NOT NULL,
+	event_name varchar(128) NULL,
+	event_card varchar(64) NULL,
+	person_id varchar(64) NULL,
+	person_name varchar(64) NULL,
+	dept_id varchar(64) NULL,
+	dept_path varchar(1024) NULL,
+	dept_name varchar(1024) NULL,
+	device_id varchar(64) NULL,
+	device_code varchar(64) NULL,
+	door_index_code varchar(64) NULL,
+	device_name varchar(64) NULL,
+	device_type int4 NULL,
+	door_name varchar(64) NULL,
+	devicel1_id varchar(64) NULL,
+	devicel1_name varchar(64) NULL,
+	devicel1_type int4 NULL,
+	devicel2_id varchar(64) NULL,
+	devicel2_name varchar(64) NULL,
+	devicel2_type int4 NULL,
+	devicel3_id varchar(64) NULL,
+	devicel3_name varchar(64) NULL,
+	tag varchar(64) NULL,
+	region_id_device varchar(64) NULL,
+	region_id_door varchar(64) NULL,
+	door_region_name varchar(1024) NULL,
+	device_region_name varchar(1024) NULL,
+	devicel3_type int4 NULL,
+	door_id varchar(64) NULL,
+	trigger_record varchar(128) NULL,
+	remark varchar(1024) NULL,
+	card_pic varchar(1024) NULL,
+	card_states int4 NULL,
+	receive_time timestamp NULL,
+	svr_index_code varchar(128) NULL,
+	job_number varchar(64) NULL,
+	cert_no varchar(64) NULL,
+	student_id varchar(64) NULL,
+	in_and_out varchar(64) NULL,
+	utc_event_time int8 NOT NULL,
+	event_time_dif varchar(8) NOT NULL,
+	utc_receive_time int8 NULL,
+	receive_time_dif varchar(8) NULL,
+	extend_property jsonb NULL,
+	business_category int4 NULL,
+	CONSTRAINT uk_tb_event UNIQUE (event_id, utc_event_time)
+)
+PARTITION BY RANGE (utc_event_time);
+CREATE INDEX idx_tb_event_deptid ON ONLY public.tb_event USING btree (dept_id);
+CREATE INDEX idx_tb_event_evty ON ONLY public.tb_event USING btree (event_type);
+CREATE INDEX idx_tb_event_person_name ON ONLY public.tb_event USING btree (person_name);
+CREATE INDEX idx_tb_event_ridd ON ONLY public.tb_event USING btree (region_id_door);
+CREATE INDEX idx_tb_event_utctm ON ONLY public.tb_event USING btree (utc_event_time);
