@@ -311,8 +311,8 @@ select * from user limit 10;
 #### 账号配置
 ```shell
 git config --list
-git config --global user.name "****"
-git config --global user email "***@***.com"
+git config --global user.name "houkx"
+git config --global user email "nihaohoukx@163.com"
 ```
 #### 本地仓库
 ```shell
