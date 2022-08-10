@@ -352,6 +352,10 @@ git push -u origin --tags
 #### 生成密钥
 ```shell 
 ssh-keygen -t rsa -C "nihaohoukx@163.com"
+# 参考 https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases
+# 创建 ssh 密码
+# 测试 github 
+ssh -T git@github.com
 ```
 #### 克隆已有仓库
 ```shell
