@@ -2,7 +2,7 @@
 <configuration>
     <contextName>community</contextName>
     <!-- 设置存放的地址 -->
-    <property name="LOG_PATH" value="E:/shiyan/Java/Cache/nowcoder"/>
+    <property name="LOG_PATH" value="../logs"/>
     <property name="APPDIR" value="community"/>
 
     <!-- error file -->

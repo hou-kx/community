@@ -48,6 +48,6 @@ public class HomeController {
 
         model.addAttribute("discussPosts", discussPosts);
         // model.addAttribute("page",page); 自动给装入了已经
-        return "/index";    //这里方法返回是String，返回则是一个HTML网页
+        return "index";    //这里方法返回是String，返回则是一个HTML网页
     }
 }

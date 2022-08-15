@@ -144,6 +144,15 @@ mysql -uroot -p # 使用用户root 通过密码登录
 
 alter user root@localhost identified by 'nihao' # 更改密码
 
+```ini
+#  windows 下要修改 port 需要修改 client 和 mysqld 两个port = 7036
+[client]
+default-character-set=utf8
+port=7036
+[mysqld]
+port=7036
+```
+
 # 创库、导数据
 create database community; # 创建数据库
 show databases;
@@ -352,10 +361,6 @@ git push -u origin --tags
 #### 生成密钥
 ```shell 
 ssh-keygen -t rsa -C "nihaohoukx@163.com"
-# 参考 https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases
-# 创建 ssh 密码
-# 测试 github 
-ssh -T git@github.com
 ```
 #### 克隆已有仓库
 ```shell
@@ -386,3 +391,24 @@ git push origin --tags  # 推送所有：
 - 也就是说git本身是没有release这个概念的，只有tag。
 - 两者之间的关系则是，release基于tag，为tag添加更丰富的信息，一般是编译好的文件。
 创建tag
+
+## 4. 登录注册功能
+
+### 4.1发邮件功能
+
+
+### 4.2 注册功能总述
+
+相对复杂的Web项目，功能可以按照请求来分解
+1. 访问注册页面
+   - 点击顶部区域内的链接，打开注册页面。·提交注册数据
+   - 通过表单提交数据。
+   - 服务端验证账号是否已存在、邮箱是否已注册。-服务端发送激活邮件。
+2. 激活注册账号
+   - 点击邮件中的链接，访问服务端的激活服务。
+
+### 4.3 thymeleaf 复用控件
+- 这里利用 thymeleaf 的属性 th:fragment="header  
+- 其他页面使用 th:replace="index::header"  来复用 这个 控件 -->
+### 4.4 注册功能实现
+1.安装对象处理判断库 mvnreprsitory.com 搜索 common lang
