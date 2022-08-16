@@ -412,3 +412,27 @@ git push origin --tags  # 推送所有：
 - 其他页面使用 th:replace="index::header"  来复用 这个 控件 -->
 ### 4.4 注册功能实现
 1.安装对象处理判断库 mvnreprsitory.com 搜索 common lang
+
+## 5. 回话管理
+### 5.1 cookie
+### 5.2 session
+
+## 6. 生成验证码 —— kaptcha
+### 6.1 使用kaptcha
+
+> 导入jar  （mvnrepository.org）
+> 
+> 编写kaptcha配置类
+> 
+> 生成随机字符、以及图片
+> 
+```xml
+<!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha -->
+<dependency>
+    <groupId>com.github.penggle</groupId>
+    <artifactId>kaptcha</artifactId>
+    <version>2.3.2</version>
+</dependency>
+
+可以看到这里 这里并没有 spring 标识 说明就是一个额外的小工具，需要自己对他进行配置，配置类，然后导入到spring容器中，由spring容器加载使用
+```

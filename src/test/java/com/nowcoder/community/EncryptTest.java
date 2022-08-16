@@ -5,13 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 //@RunWith(SpringRunner.class)
@@ -78,6 +73,6 @@ public class EncryptTest {
     }
     @Test
     public void testTest(){
-        com.nowcoder.community.Test test = new com.nowcoder.community.Test();
+        OtherTest test = new OtherTest();
     }
 }

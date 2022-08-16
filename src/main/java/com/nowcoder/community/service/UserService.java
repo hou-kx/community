@@ -19,6 +19,7 @@ import java.util.Random;
 
 @Service
 public class UserService implements CommunityConstant {
+    // 继承 静态变量的接口
     @Autowired
     private UserMapper userMapper;
     @Autowired
