@@ -1,8 +1,10 @@
 package com.nowcoder.community;
 
 import com.nowcoder.community.dao.DiscussPostMapper;
+import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.swing.*;
+import java.security.PublicKey;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +29,11 @@ public class MapperTest {
     @Autowired
     private DiscussPostMapper discussPostMapper;
 
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+
     @Test
-    public void testMapper(){
+    public void testMapper() {
         User user = userMapper.selectById(150);
         System.out.println(user);
 
@@ -67,12 +73,38 @@ public class MapperTest {
 
     @Test
     public void testDiscussPost() {
-        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(0, 0,10);
-        for(DiscussPost post : list) {
+        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(0, 0, 10);
+        for (DiscussPost post : list) {
             System.out.println(post);
         }
 
         int total = discussPostMapper.selectDiscussPostRows(0);
         System.out.println(total);
+    }
+
+    @Test
+    public void inserTicketTest() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(250);
+        loginTicket.setTicket("ticket Test");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));  // 10min  outtime
+        System.out.println(loginTicketMapper.insertLoginTicket(loginTicket));
+    }
+
+    @Test
+    public void selectTicketTest() {
+        System.out.println(loginTicketMapper.selectByTicket("ticket Test").toString());
+    }
+
+    @Test
+    public void updateTicketTest() {
+        System.out.println("#####  before change  #########");
+        System.out.println(loginTicketMapper.selectByTicket("ticket Test").toString());
+        System.out.println("#####  changed  #########");
+
+        System.out.println(loginTicketMapper.updateStatus("ticket Test", 1));
+
+        System.out.println(loginTicketMapper.selectByTicket("ticket Test").toString());
     }
 }

@@ -1,10 +1,13 @@
 package com.nowcoder.community.service;
 
+import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
+import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.MailClient;
+import javafx.scene.chart.Axis;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +35,9 @@ public class UserService implements CommunityConstant {
     private String serverPort;
     @Value("${server.servlet.context-path}")
     private String contextPath;
+
+    @Autowired
+    private LoginTicketMapper ticketMapper;
 
     public User findUserById(int id) {
         return userMapper.selectById(id);
@@ -70,7 +76,7 @@ public class UserService implements CommunityConstant {
         // 验证完毕，开始注册
         // 密码加密，生成salt
         user.setSalt(CommunityUtil.generateUUID().substring(0, 5));
-        user.setPassword(CommunityUtil.md5(user.getPassword() + user.getPassword()));
+        user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt()));
         user.setStatus(0);
         user.setActivationCode(CommunityUtil.generateUUID());
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
@@ -106,4 +112,55 @@ public class UserService implements CommunityConstant {
         }
     }
 
+    /**
+     * 登录创建登录凭证，密码验证的时候也需要进行 MD5 加密之后验证
+     */
+    public Map<String, Object> login(String username, String password, int expiredSeconds) {
+        Map<String, Object> map = new HashMap<>();
+        // 1. 表单验证
+        if (StringUtils.isBlank(username)) {
+            map.put("usernameMsg", "账号不能为空！");
+            return map;
+        }
+        if (StringUtils.isBlank(password)) {
+            map.put("passwordMsg", "密码不能为空！");
+            return map;
+        }
+
+        // 2. 账号验证，获取到，用户名对应的信息
+        User user = userMapper.selectByName(username);
+        if (user == null) {
+            map.put("usernameMsg", "该账号不存在！");
+            return map;
+        }
+        if (user.getStatus() != 1) {     // 未激活，包含以后 status 扩展: 删除、冻结啊等等状态
+            map.put("usernameMsg", "该账户未激活！");
+            return map;
+        }
+
+        // 3. 密码验证, md5 加密
+        password = CommunityUtil.md5(password + user.getSalt());
+        if (!user.getPassword().equals(password)) {
+            map.put("passwordMsg", "密码错误！");
+            return map;
+        }
+
+        // 4. 执行到这，登录就没问题了  生成登录凭证
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setTicket(CommunityUtil.generateUUID());
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000L));
+        ticketMapper.insertLoginTicket(loginTicket);
+
+        map.put("ticket", loginTicket.getTicket());
+        return map;
+    }
+
+    /**
+     * 退出账户，登录凭证失效
+     */
+    public void logout(String ticket) {
+        ticketMapper.updateStatus(ticket, 1);   // 登录凭证设为 1 无效。
+    }
 }
