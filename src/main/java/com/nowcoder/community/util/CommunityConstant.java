@@ -24,4 +24,6 @@ public interface CommunityConstant {
      * 勾选记住我转态，登录凭证存活时间
      */
     int REMEMBER_ME_EXPIRED_SECONDS = 3600 * 24 * 10;
+
+    String PARAM_EMPTY_MSG = "Parameter is empty!";
 }

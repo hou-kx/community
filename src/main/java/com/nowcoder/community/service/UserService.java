@@ -163,4 +163,14 @@ public class UserService implements CommunityConstant {
     public void logout(String ticket) {
         ticketMapper.updateStatus(ticket, 1);   // 登录凭证设为 1 无效。
     }
+
+    /**
+     * 查询 LoginTicket
+     *
+     * @param ticket
+     * @return
+     */
+    public LoginTicket findLoginTicket(String ticket) {
+        return ticketMapper.selectByTicket(ticket);
+    }
 }
