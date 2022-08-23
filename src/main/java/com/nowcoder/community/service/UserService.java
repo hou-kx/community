@@ -1,5 +1,6 @@
 package com.nowcoder.community.service;
 
+import com.nowcoder.community.controller.LoginController;
 import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.LoginTicket;
@@ -9,12 +10,17 @@ import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.MailClient;
 import javafx.scene.chart.Axis;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +35,28 @@ public class UserService implements CommunityConstant {
     private MailClient mailClient;
     @Autowired
     private TemplateEngine templateEngine;
-    @Value("${community.path.domain}")
+    @Value("${community.path.domain}${server.port}")
     private String domain;
-    @Value("${server.port}")
-    private String serverPort;
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
     @Autowired
     private LoginTicketMapper ticketMapper;
+
+    private String getDomain() {
+
+        final Logger logger = LoggerFactory.getLogger(LoginController.class);
+        String hostAddress = "";
+        try {
+            hostAddress = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            logger.error("获取 hostAddress 失败！" + e.getMessage());
+        }
+        if (StringUtils.isBlank(hostAddress)) {
+            return domain;
+        }
+        return hostAddress + ":";
+    }
 
     public User findUserById(int id) {
         return userMapper.selectById(id);
@@ -89,8 +108,8 @@ public class UserService implements CommunityConstant {
         // 创建 thymleaf context对象携带变量
         org.thymeleaf.context.Context context = new Context();
         context.setVariable("email", user.getEmail());
-        // url : http://localhost:8080/community/activation/101/activateCode
-        String url = domain + serverPort + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
+        // url : http://localhost:8090/community/activation/101/activateCode
+        String url = this.getDomain() + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url", url);
         // 加载 thymeleaf 模板网页
         String content = templateEngine.process("mail/activation", context);
@@ -115,7 +134,7 @@ public class UserService implements CommunityConstant {
     /**
      * 登录创建登录凭证，密码验证的时候也需要进行 MD5 加密之后验证
      */
-    public Map<String, Object> login(String username, String password, int expiredSeconds) {
+    public Map<String, Object> login(String username, String password, String ticket, int expiredSeconds) {
         Map<String, Object> map = new HashMap<>();
         // 1. 表单验证
         if (StringUtils.isBlank(username)) {
@@ -145,14 +164,20 @@ public class UserService implements CommunityConstant {
             return map;
         }
 
-        // 4. 执行到这，登录就没问题了  生成登录凭证
-        LoginTicket loginTicket = new LoginTicket();
-        loginTicket.setUserId(user.getId());
-        loginTicket.setTicket(CommunityUtil.generateUUID());
-        loginTicket.setStatus(0);
-        loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000L));
-        ticketMapper.insertLoginTicket(loginTicket);
-
+        // 4. 执行到这，登录就没问题了  生成/修改 登录凭证
+        LoginTicket loginTicket = StringUtils.isBlank(ticket) ? null : ticketMapper.selectByTicket(ticket);
+        if (loginTicket == null) {
+            loginTicket = new LoginTicket();
+            loginTicket.setUserId(user.getId());
+            loginTicket.setTicket(CommunityUtil.generateUUID());
+            loginTicket.setStatus(0);
+            loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000L));
+            ticketMapper.insertLoginTicket(loginTicket);
+        } else {
+            loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000L));
+            loginTicket.setStatus(0);
+            ticketMapper.updateLoginTicket(loginTicket);
+        }
         map.put("ticket", loginTicket.getTicket());
         return map;
     }
@@ -172,5 +197,29 @@ public class UserService implements CommunityConstant {
      */
     public LoginTicket findLoginTicket(String ticket) {
         return ticketMapper.selectByTicket(ticket);
+    }
+
+    /**
+     * 更新用户头像
+     *
+     * @param userId    改用户的 userId
+     * @param headerUrl 修改后的头像地址
+     * @return 收到影响的行数
+     */
+    public int updateHeader(int userId, String headerUrl) {
+        return userMapper.updateHeader(userId, headerUrl);
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param userId   用户Id
+     * @param password 用户新密码
+     * @param salt     密码加盐
+     * @return 成功返回 1
+     */
+    public int updatePassword(int userId, String password, String salt) {
+        password = CommunityUtil.md5(password + salt);
+        return userMapper.updatePassword(userId, password);
     }
 }

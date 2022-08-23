@@ -107,7 +107,7 @@
 						<div class="col-sm-4">
 							<!--<img th:src="@{img/captcha.png}" style="width:100px;height:40px;" class="mr-2"/>-->
 							<img th:src="@{/kaptcha}" id="kaptcha" style="width:100px;height:40px;" class="mr-2"/>
-							<a href="javascript:refresh_kaptcha();" class="font-size-12 align-bottom">刷新验证码</a>
+							<a href="javascript:refresh_kaptcha()" class="font-size-12 align-bottom">刷新验证码</a>
 						</div>
 					</div>				
 					<div class="form-group row mt-4">
@@ -203,6 +203,23 @@
 			var path = CONTEXT_PATH + "/kaptcha?p=" + Math.random();  // 浏览器，每次这个变量地址如果没变化，浏览器可能默认不改变，这里加上一个冗余的随机数变量
 			$("#kaptcha").attr("src", path)
 		}
+
+		// 隐藏控件向后端传值 browserFingerprinting 浏览器指纹
+		// <input name="browserFingerprinting" id="browser_fingerprinting" type="hidden"/>
+		// $(function () {
+		// 	// 登录的时候获取浏览器指纹，重复使用，login_ticket
+		// 	const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3')
+		// 			.then(FingerprintJS => FingerprintJS.load())
+		// 	// Get the visitor identifier when you need it.
+		// 	fpPromise
+		// 			.then(fp => fp.get())
+		// 			.then(result => {
+		// 				// This is the visitor identifier:
+		// 				const visitorId = result.visitorId
+		// 				console.log(visitorId)
+		// 				$('#browser_fingerprinting').val(visitorId);
+		// 			})
+		// });
 	</script>
 </body>
 </html>

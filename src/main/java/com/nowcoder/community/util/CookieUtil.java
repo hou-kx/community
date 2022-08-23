@@ -20,7 +20,7 @@ public class CookieUtil implements CommunityConstant {
 
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            return null;
+            return "";
         }
 //        // 找到对应 cookie
 //        for (Cookie c : cookies) {
@@ -34,7 +34,7 @@ public class CookieUtil implements CommunityConstant {
         // .get() If a value is present in this Optional, returns the value, otherwise throws NoSuchElementException.
         // 如果没有则会自动抛出 NoSuchElementException 异常 throw new NoSuchElementException("No value present");
         Optional<Cookie> ticket = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(name)).findFirst();
-        return ticket.map(Cookie::getValue).orElse(null);
+        return ticket.map(Cookie::getValue).orElse("");
         // return ticket.getValue();
     }
 }

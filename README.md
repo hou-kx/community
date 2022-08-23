@@ -452,9 +452,47 @@ git push origin --tags  # 推送所有：
     数据访问层 ==》 业务层 ==》 表现层
 ## 8. 登录信息展示
 ### 8.1 拦截器， 拦截浏览器访问请求，在开始和结尾插入一些代码
+1. 拦截器，需要实现， HandlerInterceptor 接口的三个方法，先后顺序
+   - preHandle  在 controller 之前执行
+   - postHandle  在 controller 之后执行， 主要的逻辑已经完成，下一步就是显示，加载模板引擎
+   - afterCompletion  在 TemplateEngine 加载之后之后执行
+2. 将定义的拦截器设置为 @Component 由，spring boot 管理，
+3. 然后再定义一个 @configration 对拦截器进行配置，哪些资源文件不要拦截，哪些请求路径需要拦截等
 
 ### 8.2 拦截器 定义
-
+```java
+// @Component
+// LoginTicketInterceptor.java
+```
 ### 8.3 拦截器 配置
+```java
+// 对所有的路径都进行拦截处理
+//registry.addInterceptor(loginTicketInterceptor)
+//        .addPathPatterns("/**")
+//        .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
+```
 
-### 8.2 
+## 9. 上传文件
+### 9.1 设计
+- 请求：必须是 post 请求，这是规定 
+- 表单 添加属性： enctype="multipart/form-data"
+- Spring MVC: 通过 MultipartFile 来处理上传文件，
+  - 并且这是属于 MVC 表现层的工具类，在 controller 里进行处理，
+  - 如果在 service 中使用导致耦合。
+### 9.2 修改头像流程
+- 访问账户账户设置页面
+- 上传头像，存储：1、服务器（硬盘里）; 2、第三方服务器里
+- 获取头像
+### 9.3 检查登录状态
+- 使用拦截器，上面直接配置需要拦截的请求地址或者文件，这里只要使用加上自定义注解则进行拦截否则不拦截
+  - 在方法前标注自定义注解
+  - 拦截所有请求，只处理带有该注解的方法
+- 自定义注解
+  - 常用的元注解
+    1. @Target   声明自己的定义，可以定义在哪里，类、方法、属性上
+    2. @Retention  生效的时间，编译时有效，还是运行时有效
+    3. @Document   生成文档
+    4. @Inherited  是否继承其父类的注解
+  - 通过反射读取注解
+    1. Method.getDeclanedAnnotations()
+    2. Method.getAnnotation(Class<T> annotationClass)

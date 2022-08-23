@@ -4,6 +4,7 @@ import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityConstant;
+import com.nowcoder.community.util.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Struct;
 import java.util.Map;
 
 @Controller
@@ -58,6 +59,7 @@ public class LoginController implements CommunityConstant {
     /**
      * 1、页面传来的数据只要和user的属性对应SpringMVC就会自动装配好注入给user对象
      * 2、并且 SpringMVC 也可自动装配方法中其它变量到 Model  中，如本方法中 user 装配到 model 中, 也可以如下主动装配到model中
+     *
      * @param model
      * @param user
      * @return
@@ -145,7 +147,7 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     // @ResponseBody
     public String login(String username, String password, String code, boolean rememberMe,
-                        Model model, HttpSession session, HttpServletResponse response) {
+                        Model model, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         // 1. 检查验证码，从 session 中取出
         String kaptcha = (String) session.getAttribute("kaptcha");
         if (StringUtils.isBlank(kaptcha) || StringUtils.isBlank(code) || !code.equalsIgnoreCase(kaptcha)) {
@@ -154,23 +156,26 @@ public class LoginController implements CommunityConstant {
         }
         // 2. 检查账号密码。
         int expiredSeconds = rememberMe ? REMEMBER_ME_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
-        Map<String, Object> map = userService.login(username, password, expiredSeconds);
-        if (map.containsKey("ticket")){
+        String ticket = CookieUtil.getValue(request, "ticket");
+        Map<String, Object> map = userService.login(username, password, ticket, expiredSeconds);
+        // 3. 验证成功，设置浏览器 cookie
+        if (map.containsKey("ticket")) {
             Cookie cookie = new Cookie("ticket", (String) map.get("ticket"));
             cookie.setPath(contextPath);    // 设置当前 cookie 生效范围为整个项目，/community, 这个在 application.properties中有定义，这里注入进来使用
             cookie.setMaxAge(expiredSeconds);   // 生效时间
             response.addCookie(cookie);     // 返回给浏览器
             // 成功重定向到首页 ==> RequestMapping(path = "/index")
             return "redirect:/index";
-        }else {
-            model.addAttribute("usernameMsg",map.get("usernameMsg"));
-            model.addAttribute("passwordMsg",map.get("passwordMsg"));
+        } else {
+            model.addAttribute("usernameMsg", map.get("usernameMsg"));
+            model.addAttribute("passwordMsg", map.get("passwordMsg"));
             return "/site/login";
         }
     }
 
     /**
      * 退出登录
+     *
      * @param ticket 这里获取浏览器请求中的 cookie 值使用 @CookieValue("paramName") String param
      * @return 配置页面
      */

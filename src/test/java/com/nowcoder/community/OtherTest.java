@@ -1,15 +1,23 @@
 package com.nowcoder.community;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
 import java.net.*;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
 @SpringBootTest
 public class OtherTest implements Runnable {
+
+    @Value("E:/work/Java/community/bak/resource/upload/pic")
+    private String uploadPath;
+
     public static void main(String[] argv) {
         OtherTest b = new OtherTest();
         b.run();
@@ -89,5 +97,26 @@ public class OtherTest implements Runnable {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void stringUtilTest(){
+        String str = null;
+        System.out.println(StringUtils.isBlank(str));
+    }
+
+    @Test
+    public void dateTest(){
+        Date num = new Date(System.currentTimeMillis());
+
+        Date num1 = new Date(System.currentTimeMillis() + 3600 * 12 * 1000);
+
+        System.out.println(num + " \t" + num1);
+        System.out.println( new Date(System.currentTimeMillis() + 3600 * 12 * 1000L));
+        System.out.println( new Date(System.currentTimeMillis() + 3600 * 12 * 1000));
+        System.out.println( new Date(System.currentTimeMillis() + 3600 * 12 * 2000L));
+        System.out.println( new Date(System.currentTimeMillis() + 3600 * 12 * 2000));
+    }
+
+
 
 }

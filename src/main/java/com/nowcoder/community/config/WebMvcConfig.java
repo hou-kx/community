@@ -1,11 +1,14 @@
 package com.nowcoder.community.config;
 
 import com.nowcoder.community.controller.interceptor.AlphaInterceptor;
+import com.nowcoder.community.controller.interceptor.LoginRequiredInterceptor;
 import com.nowcoder.community.controller.interceptor.LoginTicketInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -13,6 +16,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private AlphaInterceptor alphaInterceptor;
     @Autowired
     private LoginTicketInterceptor loginTicketInterceptor;
+    @Autowired
+    private LoginRequiredInterceptor loginRequiredInterceptor;
+    @Value("${community.path.upload}")
+    private String uploadPath;
 
     /**
      * addInterceptor：需要一个实现HandlerInterceptor接口的拦截器实例
@@ -32,5 +39,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginTicketInterceptor)
                 // .addPathPatterns("/**")
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
+        // 仅排除掉静态资源
+        registry.addInterceptor(loginRequiredInterceptor)
+                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
+
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //
+        registry.addResourceHandler(uploadPath + "/**") // 添加访问路径
+                // file: 当前项目根目录, 映射到真实的路径下的 uploadPath(变量)目录下
+                .addResourceLocations("file:" + uploadPath + "/");
     }
 }

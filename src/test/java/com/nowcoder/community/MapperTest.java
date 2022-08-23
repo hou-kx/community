@@ -6,6 +6,7 @@ import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.util.CommunityConstant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class) //Test方式也使用main中的配置类
-public class MapperTest {
+public class MapperTest implements CommunityConstant {
     @Autowired
     private UserMapper userMapper;
 
@@ -106,5 +107,14 @@ public class MapperTest {
         System.out.println(loginTicketMapper.updateStatus("ticket Test", 1));
 
         System.out.println(loginTicketMapper.selectByTicket("ticket Test").toString());
+    }
+
+    @Test
+    public void updateLoginTicketTest(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setTicket("4ca2066fa35449348d66455144ba3d76");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + DEFAULT_EXPIRED_SECONDS * 1000L));
+        System.out.println((loginTicketMapper.updateLoginTicket(loginTicket)));
     }
 }

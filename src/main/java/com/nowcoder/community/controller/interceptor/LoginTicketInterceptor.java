@@ -5,6 +5,7 @@ import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CookieUtil;
 import com.nowcoder.community.util.HostHolder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -38,7 +39,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
         // return HandlerInterceptor.super.preHandle(request, response, handler);
         // 封装一个从 request 中获取 cookie 的方法。util.CookieUtil.getValue
         String ticket = CookieUtil.getValue(request, "ticket");
-        if (ticket != null) {
+        if (StringUtils.isNotBlank(ticket)) {
             // 不为空，则查询 user 登录凭证
             LoginTicket loginTicket = userService.findLoginTicket(ticket);
             // 判断凭证状态、时效
