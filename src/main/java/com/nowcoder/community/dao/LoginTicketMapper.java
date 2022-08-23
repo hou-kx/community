@@ -68,4 +68,16 @@ public interface LoginTicketMapper {
             "and ticket = #{ticket} ",
     })
     int updateStatus(String ticket, int status);
+
+    /**
+     * 强制退出所有账户，登录凭证失效，如修改密码后
+     * @param userId
+     * @param status
+     * @return
+     */
+    @Update({
+            "update login_ticket set status = #{status} where 1=1 ",
+            "and user_id = #{userId} ",
+    })
+    int updateStatusById(int userId, int status);
 }

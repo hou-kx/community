@@ -109,7 +109,8 @@ public class UserService implements CommunityConstant {
         org.thymeleaf.context.Context context = new Context();
         context.setVariable("email", user.getEmail());
         // url : http://localhost:8090/community/activation/101/activateCode
-        String url = this.getDomain() + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
+        // String url = this.getDomain() + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
+        String url = domain + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url", url);
         // 加载 thymeleaf 模板网页
         String content = templateEngine.process("mail/activation", context);
@@ -187,6 +188,13 @@ public class UserService implements CommunityConstant {
      */
     public void logout(String ticket) {
         ticketMapper.updateStatus(ticket, 1);   // 登录凭证设为 1 无效。
+    }
+
+    /**
+     * 强制退出所有账户，登录凭证失效，如修改密码后
+     */
+    public int logoutById(int userId) {
+        return ticketMapper.updateStatusById(userId, 1);   // 登录凭证设为 1 无效。
     }
 
     /**

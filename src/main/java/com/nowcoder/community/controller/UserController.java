@@ -51,7 +51,7 @@ public class UserController {
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
-        return "/site/setting";
+        return "site/setting";
     }
 
     /**
@@ -67,7 +67,7 @@ public class UserController {
         // 1. 检查上传文件
         if (headerImage == null) {
             model.addAttribute("headerErrorMsg", "在那之前，请先选择图片！");
-            return "/site/setting";
+            return "site/setting";
         }
 
         // 2. 获取上传文件的名称，格式，以作重新生成文件名备用；
@@ -76,7 +76,7 @@ public class UserController {
         String suffix = filename != null ? filename.substring(filename.lastIndexOf('.')) : "";
         if (StringUtils.isBlank(suffix)) {
             model.addAttribute("headerErrorMsg", "文件格式不正确");
-            return "/site/setting";
+            return "site/setting";
         }
 
         // 3. 生成随机的文件名称
@@ -145,7 +145,7 @@ public class UserController {
         // 1. 验证 新旧 密码不能相同
         if (StringUtils.isBlank(newPassword) || newPassword.equals(oldPassword)) {
             model.addAttribute("newPasswordMsg", "新密码错误，不为空且不能和原密码一致");
-            return "/site/setting";
+            return "site/setting";
         }
         // 2. 验证旧密码是否正确
         User user = hostHolder.getUser();
@@ -154,11 +154,12 @@ public class UserController {
             model.addAttribute("oldPasswordMsg", "密码验证错误，请重新输入！");
             return "site/setting";
         }
-        // 3. 修改密码跳转操作成功页面
+        // 3. 修改密码跳转操作成功页面，并将该用户所有登录凭证失效，重新登录
         userService.updatePassword(user.getId(), newPassword, user.getSalt());
+        userService.logoutById(user.getId());
         model.addAttribute("msg", "密码修改成功！");
-        model.addAttribute("target", "/index");
-        return "/site/operate-result";
+        model.addAttribute("target", "/login");
+        return "site/operate-result";
     }
 
 }

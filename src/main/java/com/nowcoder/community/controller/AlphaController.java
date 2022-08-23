@@ -126,7 +126,7 @@ public class AlphaController {
     public String getSchool(Model model) { // Dispatcher 持有Model的引用，是个Bean，往里头装收据
         model.addAttribute("name", "东林");
         model.addAttribute("age", 70);
-        return "/demo/view"; // 返回的 View 的路径 String  Thymeleaf 将 model和view模板生成HTML
+        return "demo/view"; // 返回的 View 的路径 String  Thymeleaf 将 model和view模板生成HTML
     }
 
     // 响应异步请求 Json数据 当前网页不刷新，悄悄的访问数据库
