@@ -496,3 +496,12 @@ git push origin --tags  # 推送所有：
   - 通过反射读取注解
     1. Method.getDeclanedAnnotations()
     2. Method.getAnnotation(Class<T> annotationClass)
+## 10. 前缀树过滤敏感词 Trie
+### 10.1 前缀树
+- Trie、字典树也称查找树
+- 查找效率高，内存消耗高，空间换时间
+- 应用：字符串检索，词频统计，字符串排序
+### 10.2 敏感词过滤器
+- 定义前缀树
+- 根据敏感词，初始化前缀树、
+- 编写过滤敏感词的方法
