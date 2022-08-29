@@ -1,12 +1,10 @@
-#Community
-
-## 1 工具安装 
-### 1.1 安装JDK
+# 1 工具安装 
+## 1.1 安装JDK
 官网下载[JDK1.8](https://www.oracle.com/java/technologies/downloads/#java8-windows)，并配置好环境变量  
 
 通过```java -version```查看版本
 
-### 1.2 安装 Maven
+## 1.2 安装 Maven
 [Maven 官网](https://maven.apache.org/download.cgi)下载相应的，zip (Windows下) 紧接着配置环境变量。
 
 _"D:\Development\apache-maven-3.8.5\conf\Setting.xml"_ 下更改**maven**的配置文件
@@ -25,25 +23,25 @@ _"D:\Development\apache-maven-3.8.5\conf\Setting.xml"_ 下更改**maven**的配�
 </mirrors>
 ```
 可以通过```mvn -version```查看安装情况
-### 1.3 安装Idea
+## 1.3 安装Idea
 官网[下载地址](https://www.jetbrains.com/idea/download/#section=windows)，配置好Idae的**Maven**环境
 
 可以参考Maven[操作手册](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 
-## 2 Spring环境搭建
+## 1.4 Spring环境搭建
 
 Spring手册，可以访问(https://Spring.io)
 
 **Maven**导包可以通过阿里云的仓库(maven.aliyun.com/mvn/view)进行下载   
 也可以通过专门导包网站找到(http://mvnrepository.com)放到自己的**POM.xml**的`<dependencies>`标签下
->```xml
-><!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java -->
-><dependency>
->    <groupId>com.alipay.sdk</groupId>
->    <artifactId>alipay-sdk-java</artifactId>
->    <version>4.22.81.ALL</version>
-></dependency>
->```
+```xml
+<!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java -->
+<dependency>
+    <groupId>com.alipay.sdk</groupId>
+    <artifactId>alipay-sdk-java</artifactId>
+    <version>4.22.81.ALL</version>
+</dependency>
+```
 
 使用 **Spring Initializr** 创建Spring Boot的引导工具(https://start.spring.io)
 
@@ -55,35 +53,38 @@ Spring手册，可以访问(https://Spring.io)
 
 解压，Idea打开，创建成功后，运行成功，在浏览器(http://localhost:8080)
 
-### 2.1
-**Spring core**
-- IoC、AOP
-
-**Spring Date Access**
-- Transactions、Spring MyBatis
-
-**Web Servlet**
-- Spring MVC
-
-**Integration**
-- Email、Scheduling、AMQP、Security
+- **Spring core**
+  - IoC、AOP
+- **Spring Date Access**
+  - Transactions、Spring MyBatis
+- **Web Servlet**
+  - Spring MVC
+- **Integration**
+  - Email、Scheduling、AMQP、Security
 
 `GA`表示正式版本
 
-## 2.2 Bean的注解
+# 2 Spring boot
+## 2.1 注解使用
+### 2.1.1 Bean的注解
 > @Controler 请求
+> 
 > @Service       业务
+> 
 > @Repository    数据库相关
+> 
 > @Coponent 到处都可以用
 
 Tips:  类名+@哈希code 是对象输出的方式
 
-### 创建bean
-``.dao``Date access object
+### 2.1.2 创建bean
+``.dao`` -> Date access object
 
-## 2.3 实际应用
+### 2.1.3 实际应用
 
-由**Controler**处理浏览器的请求，调用**Service**处理业务，**Service**调用**Dao**访问数据库
+- 由**Controler**处理浏览器的请求
+- 调用**Service**处理业务
+- **Service**调用**Dao**访问数据库
 
 他们之间的依赖关系就可以靠依赖注入来完成如：
 ```Java
@@ -96,8 +97,8 @@ Private AlphaDao alphaDao;
 
 ``@responseBody``注解的作用是将``controller``的方法返回的对象通过适当的转换器转换为指定的格式之后，写入到response对象的body区，通常用来返回JSON数据或者是XML数据。
 
-## 3 Spring MVC
-### 3.1 **HTTP**
+## 2.2 Spring MVC
+### 2.2.1 **HTTP**
 
 HyperText Transfer Protocol (https://developer.mozilla.org/zh-CN)
 
@@ -116,7 +117,7 @@ HyperText Transfer Protocol (https://developer.mozilla.org/zh-CN)
 
 **核心组件** ``DispatcherServlet``基于Spring容器即``WebApplicationContext``来管理
 
-### 3.2 Thyemleaf
+### 2.2.2 Thyemleaf
 (模板文件 + Model)--→ 模板引擎 --→ HTML 
 (https://www.thymeleaf.org)<br>
 **Thymeleaf**以``.html``为模板 JSP以``.jsp``文件为模板
@@ -124,18 +125,18 @@ HyperText Transfer Protocol (https://developer.mozilla.org/zh-CN)
  - **Get**请求 像浏览器获取数据，数据分页显示：当前第几页；每页显示多少条
  - **Post** 像浏览器提交数据 ，实际使用Get请求也能实现传参的作用：1需要在地址显式使用参数传参，2是地址长度有限
 
- > **templates** 存放的是模板，记载Model,是动态资源
+ > **templates** 存放的是模板，记载Model,是动态资源<br>
  > **static** 存放的是静态资源，CSS、JS等
 
-### 3.3 Mybatis
-访问数据库的工具
+## 2.3 Mybatis
+### 2.3.1 访问数据库的工具
 
 **MySQL** (https://dev.mysql.com/downloads/mysql) 服务
 **Workbench** (https://dev.mysql.com/downloads/workbench) 管理工具<br>
 **MySQL**安装，无论是不是配置好环境变量都需要在解压根目录安装<br>
 > 需要在根目录新建一个配置文件 my.ini，
->配置一下目录地址，编码格式，最大连接数等<br>
-```shell
+> 配置一下目录地址，编码格式，最大连接数等<br>
+```bash
 mysqld --initialize --console   # 加载配置文件，初始化
 mysqld install
 net start mysql     # 启动MySQL服务
@@ -144,16 +145,15 @@ mysql -uroot -p # 使用用户root 通过密码登录
 
 alter user root@localhost identified by 'nihao' # 更改密码
 
-```ini
-#  windows 下要修改 port 需要修改 client 和 mysqld 两个port = 7036
-[client]
+[client]    # windows 下要修改 port 需要修改 client 和 mysqld 两个port = 7036
 default-character-set=utf8
 port=7036
 [mysqld]
 port=7036
 ```
 
-# 创库、导数据
+### 2.3.2 创库、导数据
+```SQL
 create database community; # 创建数据库
 show databases;
 use community;  # 在这个库操作
@@ -186,7 +186,7 @@ select * from user limit 10;
 ```
 > 已经引入了MySQL和MyBatis，下面就是对 MySQL、连接池、MyBatis的配置在`application.properties`中进行修改.
 ***
-### 3.4 连接数据库使用MyBatis
+### 2.3.3 连接数据库使用MyBatis
 
 实体类 封装表内的数据进行使用。
 **访问数据库user表**
@@ -200,9 +200,9 @@ select * from user limit 10;
 - MySQL中下划线分割单词命名，读到的字段名 aa_bb，而Java对应的实体类的属性则是aaBb
 - 配置``mybatis.configuration.mapUnderscoreToCamelCase=true``实现二者一一对应
 ******
-### 3.5 前后端联动，Thymeleaf engine
+### 2.3.4 前后端联动，Thymeleaf engine
 **用户请求 -> Contrller - > Service - > Dao -> DB**
-#### 先显示10个帖子：
+**先显示10个帖子**：
 - 1 首先创建**实体类**``DiscussPost.java``，来接收数据库传输过来的关于帖子的属性
 - 2 然后``Dao``创建``DiscussPostMapper.java``**接口**，提供查询的方法
 - - 接着在``resource.mapper``下创建对应的``discusspost-mapper.xml``存放对应的**SQL查询语句**
@@ -215,8 +215,8 @@ select * from user limit 10;
 - - 将获取到的**数据**以及**Model**通过Thymeleaf模板，生成HTML文件返回给用户
 - - 在前端页面通过 Thymeleaf 调用后台数据对模板内容进行填充的。
 
-### 3.6 数据分页 
-#### **这里所有的代码以后可以复用**
+### 2.3.5 数据分页 
+ **这里所有的代码以后可以复用**
 这里就需要封装一个关于分页的实体类，来存储有关分页的数据。
 > 当前行、每页显示行数、总行数、每页复用路径
 
@@ -254,23 +254,24 @@ select * from user limit 10;
 最终因为需要显示在页面中所以这个实体类需要导入到响应的Controller中，供上述前端页面使用
 
 ******
-### 3.7 项目调试技巧
-**响应状态码** (https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status)手册建议
+## 2.4 项目调试技巧
+### 2.4.1 **响应状态码** 
+(https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status)手册建议
 - **200** 请求成功
 - **302** 3就是跳转重定向，此响应代码表示所请求资源的URI已**暂时**更改。未来可能会对URI进行进一步的改变。
 - **404** Not Found 路径错误，页面
 - **500** 服务器接收到请求，但出现了问题，服务端的程序
 
-**服务断点调试**打断点逐行执行，查看数据内同是否有问题
+### 2.4.2 **服务断点调试**打断点逐行执行，查看数据内同是否有问题
 - F8向下执行一行
 - F7进入当前行的方法内部
 - F9运行直到下个断点
 - 断点管理
 
-**客户端断点调试**
+### 2.4.3 **客户端断点调试**
 - 实际就是调试JS，和服务段差不多，就是快捷键不太同，使用的是浏览器调试
 
-**设置日志级别，将日志输出到不同的终端**
+### 2.4.4 **设置日志级别，将日志输出到不同的终端**
 (https://logback.qos.ch)
 - **trace - debug - info - warn - error** 配置文件里可以设置显示级别
 - 为了所有方法都可用通常吧日志设置为**静态&不可更改**的finnal方法
@@ -282,7 +283,8 @@ select * from user limit 10;
 - ``logging.level.com.nowcoder.community=debug``
 - ``logging.file.name=E:/shiyan/Java/Cache/nowcoder/community.log``
 
-**详细设置** 在resource根目录先建一个``logback-spring.xml``来存放日志相关的文件，必须是这个名字Spring Boot才能检测到，不然默认没有
+### 2.4.5 **日志详细设置** 
+在resource根目录先建一个``logback-spring.xml``来存放日志相关的文件，必须是这个名字Spring Boot才能检测到，不然默认没有
 ```xml
     <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 存放的地址 -->
@@ -312,19 +314,19 @@ select * from user limit 10;
     </appender>
 ```
 
-### 3.8 版本维护
+## 2.5 版本维护
 **Git** 分布式版本仓库(https://git-scm.com/book/zh/v2)
 > Git Bash  --  Linux
 > Git CMD   --  Windows
 
-#### 账号配置
+### 2.5.1 账号配置
 ```shell
 git config --list
 git config --global user.name "houkx"
 git config --global user email "nihaohoukx@163.com"
 ```
-#### 本地仓库
-```shell
+### 2.5.2 本地仓库
+```
 # nowcoder   https://git.nowcoder.com/814594056/community.git
 # github     git@github.com:hou-kx/community.git
 ###################################################################################
@@ -334,8 +336,8 @@ git add *    # 全部 * 临时加入了本地仓库，没有实际提交 这个�
 git commit -m 'test'      # 这一步才是真正的提交(本地) -m 表示这次的提交写一个备注
 git log # 查看提交记录
 ```
-#### 新建一个远程仓库
-```shell
+### 2.5.3 新建一个远程仓库
+```
 echo "# Test" >> README.md
 git init
 git add README.md
@@ -345,28 +347,28 @@ git commit -m "first commit"
 git remote add origin git@github.com:hou-kx/community.git
 git push -u origin master   # 提交
 ```
-#### 查看：a所有分支、v分析、vv本地和远程的关系
+### 2.5.4 查看：a所有分支、v分析、vv本地和远程的关系
 ```shell
 git branch -a
 git branch -v
 git branch -vv
 ```
-#### 原本有一个仓库，重建一个
+### 2.5.5 原本有一个仓库，重建一个
 ```shell
 git remote rename origin old-origin
 git remote add origin https://git.nowcoder.com/814594056/community.git
 git push -u origin --all
 git push -u origin --tags
 ```
-#### 生成密钥
+### 2.5.6 生成密钥
 ```shell 
 ssh-keygen -t rsa -C "nihaohoukx@163.com"
 ```
-#### 克隆已有仓库
+### 2.5.7 克隆已有仓库
 ```shell
 git clone https://git.nowcoder.com/814594056/community.git
 ```
-#### 创建tag
+### 2.5.8 创建tag
 ```shell
 # 创建lightweight类型的tag：
 git tag v1.4-lw
@@ -386,18 +388,16 @@ git tag -a v1.2 9fceb02 -m "my tag"  # 给指定的某个commit(Hash)号加tag
 git push origin v1.0    # 将tag同步到远程服务器
 git push origin --tags  # 推送所有：
 ```
-#### release和tag区别
+### 2.5.9 release和tag区别
 - 标签是git中的概念，而release则是Github、码云等源码托管商所提供的更高层的概念。
 - 也就是说git本身是没有release这个概念的，只有tag。
 - 两者之间的关系则是，release基于tag，为tag添加更丰富的信息，一般是编译好的文件。
 创建tag
 
-## 4. 登录注册功能
+# 3 登录注册功能
 
-### 4.1发邮件功能
-
-
-### 4.2 注册功能总述
+## 3.1 用户注册
+### 3.1.1 注册功能总述
 
 相对复杂的Web项目，功能可以按照请求来分解
 1. 访问注册页面
@@ -407,18 +407,18 @@ git push origin --tags  # 推送所有：
 2. 激活注册账号
    - 点击邮件中的链接，访问服务端的激活服务。
 
-### 4.3 thymeleaf 复用控件
+### 3.1.2 thymeleaf 复用控件
 - 这里利用 thymeleaf 的属性 th:fragment="header  
 - 其他页面使用 th:replace="index::header"  来复用 这个 控件 -->
-### 4.4 注册功能实现
+### 3.1.3 注册功能实现
 1.安装对象处理判断库 mvnreprsitory.com 搜索 common lang
 
-## 5. 回话管理
-### 5.1 cookie
-### 5.2 session
+## 3.2 回话管理
+### 3.2.1 cookie
+### 3.2.2 session
 
-## 6. 生成验证码 —— kaptcha
-### 6.1 使用kaptcha
+## 3.3 生成验证码 —— kaptcha
+### 3.3.1 使用kaptcha
 
 > 导入jar  （mvnrepository.org）
 > 
@@ -437,8 +437,8 @@ git push origin --tags  # 推送所有：
 <!--可以看到这里 这里并没有 spring 标识 说明就是一个额外的小工具，需要自己对他进行配置，配置类，然后导入到spring容器中，由spring容器加载使用-->
 ```
 
-## 7. 登录、退出功能
-### 7.1 功能设计
+## 3.4 登录、退出功能
+### 3.4.1 功能设计
 1. 访问登录页面
 2. 登录
     > 验证账号、密码、验证码 <br>
@@ -450,8 +450,8 @@ git push origin --tags  # 推送所有：
    > 跳转首页
 4. 结构<br>
     数据访问层 ==》 业务层 ==》 表现层
-## 8. 登录信息展示
-### 8.1 拦截器， 拦截浏览器访问请求，在开始和结尾插入一些代码
+## 3.5 登录信息展示
+### 3.5.1 拦截器， 拦截浏览器访问请求，在开始和结尾插入一些代码
 1. 拦截器，需要实现， HandlerInterceptor 接口的三个方法，先后顺序
    - preHandle  在 controller 之前执行
    - postHandle  在 controller 之后执行， 主要的逻辑已经完成，下一步就是显示，加载模板引擎
@@ -459,12 +459,12 @@ git push origin --tags  # 推送所有：
 2. 将定义的拦截器设置为 @Component 由，spring boot 管理，
 3. 然后再定义一个 @configration 对拦截器进行配置，哪些资源文件不要拦截，哪些请求路径需要拦截等
 
-### 8.2 拦截器 定义
+### 3.5.2 拦截器 定义
 ```java
 // @Component
 // LoginTicketInterceptor.java
 ```
-### 8.3 拦截器 配置
+### 3.5.3 拦截器 配置
 ```java
 // 对所有的路径都进行拦截处理
 //registry.addInterceptor(loginTicketInterceptor)
@@ -472,18 +472,18 @@ git push origin --tags  # 推送所有：
 //        .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
 ```
 
-## 9. 上传文件
-### 9.1 设计
+## 3.6 上传文件
+### 3.6.1 设计
 - 请求：必须是 post 请求，这是规定 
 - 表单 添加属性： enctype="multipart/form-data"
 - Spring MVC: 通过 MultipartFile 来处理上传文件，
   - 并且这是属于 MVC 表现层的工具类，在 controller 里进行处理，
   - 如果在 service 中使用导致耦合。
-### 9.2 修改头像流程
+### 3.6.2 修改头像流程
 - 访问账户账户设置页面
 - 上传头像，存储：1、服务器（硬盘里）; 2、第三方服务器里
 - 获取头像
-### 9.3 检查登录状态
+### 3.6.3 检查登录状态
 - 使用拦截器，上面直接配置需要拦截的请求地址或者文件，这里只要使用加上自定义注解则进行拦截否则不拦截
   - 在方法前标注自定义注解
   - 拦截所有请求，只处理带有该注解的方法
@@ -496,12 +496,24 @@ git push origin --tags  # 推送所有：
   - 通过反射读取注解
     1. Method.getDeclanedAnnotations()
     2. Method.getAnnotation(Class<T> annotationClass)
-## 10. 前缀树过滤敏感词 Trie
-### 10.1 前缀树
+# 4 核心功能
+## 4.1 前缀树过滤敏感词 Trie
+### 4.1.1 前缀树
 - Trie、字典树也称查找树
 - 查找效率高，内存消耗高，空间换时间
 - 应用：字符串检索，词频统计，字符串排序
-### 10.2 敏感词过滤器
+### 4.1.2 敏感词过滤器
 - 定义前缀树
 - 根据敏感词，初始化前缀树、
 - 编写过滤敏感词的方法
+## 4.2 发布帖子
+### 4.2.1 异步请求 AJAX
+- AJAX
+  - Asynchronous JavaScript and XML
+  - 异步 js 和 xml 老技术的新结合，新的术语
+  - 使用 AJAX 网页增量更新显示，局部刷新
+  - 虽然 x 表示的是 xml 单线基本都用的是 Json 基本所有语言都可以解析 Json; [AJAX](https://developer.mozilla.org/zh-CN/docs/Web/Guide/AJAX) -> AJAJ ?
+- 示例
+  - 使用 jQuery (js框架) 发送 AJAX 请求  项目前端是 bootstrap，页面也都引入了 jQuery 
+- 实践
+  - 采用 AJAX 实现发帖子

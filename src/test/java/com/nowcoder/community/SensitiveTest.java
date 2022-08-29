@@ -26,6 +26,5 @@ public class SensitiveTest {
         text = "小明喜欢￥赌￥博￥，一天天的在学校学校@装@逼@，真是☆特☆么☆的☆无☆语☆！你觉得呢?";
         System.out.println(text);
         System.out.println(sensitiveFilter.filter(text));
-
     }
 }

@@ -218,4 +218,12 @@ public class AlphaController {
         System.out.println("code: " + session.getAttribute("code") + "\tname: " + session.getAttribute("name") + "\tage: " + session.getAttribute("age"));
         return "get session";
     }
+
+    @RequestMapping(path = "/ajax", method = RequestMethod.POST)
+    @ResponseBody  // 表示这返回的不是网页而是字符串
+    public String ajaxTest(String name, int age) {
+        System.out.println(name);
+        System.out.println(age);
+        return CommunityUtil.getJSONString(0, "AJAX-操作成功", null);
+    }
 }

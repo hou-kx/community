@@ -3,6 +3,7 @@ package com.nowcoder.community.dao;
 import com.nowcoder.community.entity.DiscussPost;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -16,6 +17,18 @@ public interface DiscussPostMapper {
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
 
     // @Param 如果只有一个参数，并且在<if>标签里判断这个参数使用，则必须使用别名设置
+
+    /**
+     * @param userId 用户id
+     * @return  用户发表的帖子个数，userId 为 0 则查询所有用户
+     */
     int selectDiscussPostRows(@Param("userId") int userId);
+
+    /**
+     * 新增帖子
+     * @param discussPost 帖子
+     * @return  新增行数
+     */
+    int insertDiscussPost(DiscussPost discussPost);
 
 }
