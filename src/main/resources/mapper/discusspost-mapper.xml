@@ -36,4 +36,11 @@
         values (#{userId}, #{title}, #{content}, #{type}, #{status}, #{createTime}, #{commentCount}, #{score})
     </insert>
 
+    <select id="selectDiscussPostById" resultType="DiscussPost" parameterType="int">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where 1=1
+        and id = #{id}
+    </select>
+
 </mapper>

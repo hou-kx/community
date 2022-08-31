@@ -517,3 +517,13 @@ git push origin --tags  # 推送所有：
   - 使用 jQuery (js框架) 发送 AJAX 请求  项目前端是 bootstrap，页面也都引入了 jQuery 
 - 实践
   - 采用 AJAX 实现发帖子
+## 4.3 帖子详情
+- DiscussPostMapper
+- DiscussPostService
+- DiscussPostController
+- index.html
+  - 帖子标题上增加访问详情页的链接 
+- discuss-detail.html
+  - 处理静态资源访问路径
+  - 复用 index.html 的header
+  - 显示标题、作者、发布时间、帖子正文等内容

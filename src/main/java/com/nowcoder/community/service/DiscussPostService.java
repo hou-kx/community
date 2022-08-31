@@ -22,17 +22,18 @@ public class DiscussPostService {
     }
 
     public int findDiscussPostRows(int userId) {
-        return  discussPostMapper.selectDiscussPostRows(userId);
+        return discussPostMapper.selectDiscussPostRows(userId);
     }
 
     /**
      * 发表帖子——新增
      * 处理标题、内容，首先进行 HTML 标签的转义，然后进行敏感词汇的过滤
+     *
      * @param discussPost
      * @return
      */
-    public int addDiscussPost(DiscussPost discussPost){
-        if (discussPost == null){
+    public int addDiscussPost(DiscussPost discussPost) {
+        if (discussPost == null) {
             throw new IllegalArgumentException("发送帖子-参数不能为空！");
         }
 
@@ -44,6 +45,16 @@ public class DiscussPostService {
         discussPost.setContent(sensitiveFilter.filter(discussPost.getContent()));
 
         return discussPostMapper.insertDiscussPost(discussPost);
+    }
+
+    /**
+     * 获取帖子详情
+     *
+     * @param id
+     * @return
+     */
+    public DiscussPost findDiscussPostById(int id) {
+        return discussPostMapper.selectDiscussPostById(id);
     }
 
 }

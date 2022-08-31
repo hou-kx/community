@@ -117,4 +117,10 @@ public class MapperTest implements CommunityConstant {
         loginTicket.setExpired(new Date(System.currentTimeMillis() + DEFAULT_EXPIRED_SECONDS * 1000L));
         System.out.println((loginTicketMapper.updateLoginTicket(loginTicket)));
     }
+
+    @Test
+    public void selectDiscussPostTest(){
+        int id = 249;
+        System.out.println(discussPostMapper.selectDiscussPostById(id).toString());
+    }
 }
