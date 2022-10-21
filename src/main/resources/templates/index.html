@@ -145,15 +145,15 @@
 								<ul class="d-inline float-right">
 									<li class="d-inline ml-2">赞 11</li>
 									<li class="d-inline ml-2">|</li>
-									<li class="d-inline ml-2">回帖 7</li>
+									<li class="d-inline ml-2">回帖 <span th:text="${map.post.commentCount}">7</span></li>
 								</ul>
 							</div>
 						</div>						
 					</li>
 				</ul>
 				<!-- 分页 -->
-				<!-- 若page数据不为空则就可以分页显示 -->
-				<nav class="mt-5" th:if="${page.rows>0}">
+				<!-- 若page数据不为空则就可以分页显示 复用 th:fragment -->
+				<nav class="mt-5" th:if="${page.rows>0}" th:fragment="pagination">
 					<ul class="pagination justify-content-center">
 						<li class="page-item">
 							<!-- 这里（current=1）相当于 /path?current=1 地址变量-->
