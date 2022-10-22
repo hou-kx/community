@@ -121,7 +121,7 @@ public class DiscussPostController implements CommunityConstant {
         }
         // 添加到Model中加载
         model.addAttribute("comments", commentVoList);
-        return "/site/discuss-detail";
+        return "site/discuss-detail";   // 返回静态页面地址不加 /
     }
 
 }

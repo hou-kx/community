@@ -12,4 +12,6 @@ public interface CommentMapper {
     // 查询所有的评论数量，来计算分页数
     int selectCountByEntity(int entityType, int entityId);
 
+    //添加评论
+    int insertComment(Comment comment);
 }

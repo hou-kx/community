@@ -5,18 +5,25 @@ import java.util.Date;
 public class Comment {
     // 评论Id
     private int id;
+
     // 发布评论的用户id
     private int userId;
+
     // 评论的类型，对题目，帖子，视频等等类型
     private int entityType;
+
     // 当前评论类型下的实体Id，比如具体额那个题目或者帖子等
     private int entityId;
+
     // 评论的时候，有回复某个人，这个用 target 指向某个人
     private int targetId;
+
     // 目标内容
     private String content;
+
     // 当前评论的状态
     private int status;
+
     // 创建时间
     private Date CreateTime;
 

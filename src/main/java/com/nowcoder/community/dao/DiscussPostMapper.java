@@ -26,18 +26,16 @@ public interface DiscussPostMapper {
 
     /**
      * 新增帖子
-     *
-     * @param discussPost 帖子
-     * @return 新增行数
      */
     int insertDiscussPost(DiscussPost discussPost);
 
     /**
      * 通过帖子的id 查询详情
-     *
-     * @param id
-     * @return
      */
     DiscussPost selectDiscussPostById(int id);
 
+    /**
+     * 修改帖子评论数，添加评论的时候冗余的修改帖子表
+     */
+    int updateCommentCount(int id, int CommentCount);
 }
