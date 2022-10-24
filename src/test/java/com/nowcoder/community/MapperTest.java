@@ -2,9 +2,11 @@ package com.nowcoder.community;
 
 import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.dao.LoginTicketMapper;
+import com.nowcoder.community.dao.MessageMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.LoginTicket;
+import com.nowcoder.community.entity.Message;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.util.CommunityConstant;
 import org.junit.Test;
@@ -32,6 +34,9 @@ public class MapperTest implements CommunityConstant {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void testMapper() {
@@ -110,7 +115,7 @@ public class MapperTest implements CommunityConstant {
     }
 
     @Test
-    public void updateLoginTicketTest(){
+    public void updateLoginTicketTest() {
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setTicket("4ca2066fa35449348d66455144ba3d76");
         loginTicket.setStatus(0);
@@ -119,8 +124,34 @@ public class MapperTest implements CommunityConstant {
     }
 
     @Test
-    public void selectDiscussPostTest(){
+    public void selectDiscussPostTest() {
         int id = 249;
         System.out.println(discussPostMapper.selectDiscussPostById(id).toString());
+    }
+
+    @Test
+    public void selectLetterUnreadCountTest() {
+        int userId = 111;
+        String conversationId = "111_131";
+        int offset = 0;
+        int limit = 20;
+
+        int unreadCount = messageMapper.selectLetterUnreadCount(userId, conversationId);
+        int allUnreadCount = messageMapper.selectLetterUnreadCount(userId, null);
+        System.out.println("unread count :" + unreadCount);
+        System.out.println("all unread count :" + allUnreadCount);
+        System.out.println("===========letter=================");
+
+        List<Message> letters = messageMapper.selectLetters(conversationId, offset, limit);
+        for (Message m : letters) System.out.println(m.toString());
+        int letterCount = messageMapper.selectLetterCount(conversationId);
+        System.out.println("letterCount : " + letterCount);
+        System.out.println("==========conversations====================");
+
+        List<Message> conversations = messageMapper.selectConversations(userId, offset, limit);
+        for (Message m : conversations) System.out.println(m.toString());
+        int conversationCount = messageMapper.selectConversationCount(userId);
+        System.out.println("conversationCount : " + conversationCount);
+
     }
 }

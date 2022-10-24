@@ -30,7 +30,7 @@
 							</li>
 							<!--	没登录不显示消息、用户头像等；登录不显示 注册、登录; th:if 只有为真的时候，才会显示当前元素和相关值 -->
 							<li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser!=null}">
-								<a class="nav-link position-relative" href="site/letter.html">消息<span class="badge badge-danger">12</span></a>
+								<a class="nav-link position-relative" th:href="@{/conversation/list}">消息<span class="badge badge-danger" >12</span></a>
 							</li>
 							<li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser==null}">
 								<a class="nav-link" th:href="@{/register}">注册</a>

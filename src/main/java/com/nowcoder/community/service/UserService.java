@@ -165,9 +165,9 @@ public class UserService implements CommunityConstant {
             return map;
         }
 
-        // 4. 执行到这，登录就没问题了  生成/修改 登录凭证
+        // 4. 执行到这，登录就没问题了  生成/修改 登录凭证, 若当前ticket已经存在，则直接使用，若不是同个账号则创建新的ticket
         LoginTicket loginTicket = StringUtils.isBlank(ticket) ? null : ticketMapper.selectByTicket(ticket);
-        if (loginTicket == null) {
+        if (loginTicket == null || loginTicket.getUserId() != user.getId()) {
             loginTicket = new LoginTicket();
             loginTicket.setUserId(user.getId());
             loginTicket.setTicket(CommunityUtil.generateUUID());
