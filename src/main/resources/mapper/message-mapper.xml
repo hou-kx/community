@@ -65,4 +65,17 @@
                 and conversation_id = #{conversationId}
             </if>
     </select>
+    <!-- keyProperty 指定自增字段 -->
+    <insert id="insertMessage" parameterType="Message" keyProperty="id">
+        insert into message(<include refid="insertFields"></include>)
+        values (#{fromId}, #{toId}, #{conversationId}, #{content}, #{status}, #{createTime})
+    </insert>
+    <!-- foreach 遍历集合元素item，左边 '(' 中间元素以 ',' 分割，以')'结束遍历 -->
+    <update id="updateStatus">
+        update message set status = #{status}
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>
