@@ -50,4 +50,9 @@ public class HomeController {
         // model.addAttribute("page",page); 自动给装入了已经
         return "index";    //这里方法返回是String，返回则是一个HTML网页
     }
+
+    @RequestMapping(path = "/error", method = RequestMethod.GET)
+    public String getError() {
+        return "error/500";
+    }
 }

@@ -5,6 +5,8 @@ import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.util.CommunityConstant;
+import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,14 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
-public class MessageController {
+public class MessageController implements CommunityConstant {
 
     @Autowired
     private MessageService messageService;
@@ -65,6 +65,8 @@ public class MessageController {
 
     /**
      * 私信详情
+     * 1、分页展示消息列表
+     * 2、设置未读消息为已读
      */
     @RequestMapping(path = "/conversation/detail/{conversationId}", method = RequestMethod.GET)
     public String getConversationDetail(@PathVariable("conversationId") String conversationId, Model model, Page page) {
@@ -85,9 +87,29 @@ public class MessageController {
             }
         }
         model.addAttribute("letters", letterVoList);
-        // 3、目标用户
+        // 3、私信目标用户
         model.addAttribute("target", getLetterTarget(conversationId));
+        // 4、若存在维多的消息则需要设置已读！
+        List<Integer> ids = getUnreadIds(letterList);
+        if (!ids.isEmpty()) {
+            messageService.readMessage(ids);
+        }
         return "site/letter-detail";
+    }
+
+    /**
+     * 获取列表中，未读私信的 ID
+     */
+    private List<Integer> getUnreadIds(List<Message> messageList) {
+        List<Integer> ids = new ArrayList<>();
+        if (messageList != null) {
+            for (Message message : messageList) {
+                if (message.getToId() == hostHolder.getUser().getId() && message.getStatus() == MESSAGE_STATUS_UNREAD) {
+                    ids.add(message.getId());
+                }
+            }
+        }
+        return ids;
     }
 
     /**
@@ -99,5 +121,34 @@ public class MessageController {
         int id1 = Integer.parseInt(ids[1]);
 
         return userService.findUserById(hostHolder.getUser().getId() == id0 ? id1 : id0);
+    }
+
+    /**
+     * 响应异步发送消息  请求
+     */
+    @RequestMapping(path = "/message/send", method = RequestMethod.POST)
+    @ResponseBody
+    public String sentMessage(String toName, String content) {
+        User target = userService.findUserByName(toName);
+        // 1、判断目标用是否存在
+        if (target == null) {
+            return CommunityUtil.getJSONString(1, "目标用户不存在！", toName);
+        }
+        // 2、构建发送消息对象
+        Message message = new Message();
+        message.setFromId(hostHolder.getUser().getId());
+        message.setToId(target.getId());
+        message.setContent(content);
+        // 2.1 保证回话 ID 为 "小_大" 的用户 id 组合。
+        if (message.getFromId() < message.getToId()) {
+            message.setConversationId(message.getFromId() + "_" + message.getToId());
+        } else {
+            message.setConversationId(message.getToId() + "_" + message.getFromId());
+        }
+        message.setCreateTime(new Date());
+
+        // 3、 写入数据库
+        messageService.addMessage(message);
+        return CommunityUtil.getJSONString(0, "发送消息成功", message);
     }
 }

@@ -561,3 +561,91 @@ git push origin --tags  # 推送所有：
 - 私信详情
   - 查询某个回话所包含的私信
   - 支持分页显示
+
+### 4.6.1 Mybits 批量修改数据, \<foreach/>
+```xml
+<!-- foreach 遍历集合元素item，左边open '(' 中间元素以 ',' 分割，close 以')'结束遍历 -->
+<update id="updateStatus">
+    update message set status = #{status}
+    where id in
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+</update>
+```
+
+### 4.6.2 @ResponseBody 使用的时机
+**返回的数据不是html标签的页面，而是其他某种格式的数据时（如json、xml等）使用；**
+> - 异步请求的 controller 方法一般使用 @ResponseBody 注解
+> <br> 
+> - 是因为那时用的异步都设定了
+>   > - 返回数据类型为 json，所以必须用 @ResponseBody 注解。
+>   > - 而有些异步请求返回的 jsp、html, 如 load()方法请求返回的内容就不是 json 数据
+> - 此时 controller 映射的方法上就不能适应 @ResponseBody 注解了，否则会映射不到请求路径！
+### 4.6.3  ```== 代表相同， ===代表严格相同```
+### 4.6.4 JS 选择器
+- JS 中，**#** 是 CSS 中元素的 ID 选择器，用于选定某个元素控件
+```JS
+// jQuery 元素选择器
+// jQuery 使用 CSS 选择器来选取 HTML 元素。
+
+$("p") // 选取 <p> 元素。
+
+$("p.intro") // 选取所有 class="intro" 的 <p> 元素。
+
+$("p#demo") // 选取所有 id="demo" 的 <p> 元素。
+
+// jQuery 属性选择器
+// jQuery 使用 XPath 表达式来选择带有给定属性的元素。
+
+$("[href]") // 选取所有带有 href 属性的元素。
+
+$("[href='#']") // 选取所有带有 href 值等于 "#" 的元素。
+
+$("[href!='#']") // 选取所有带有 href 值不等于 "#" 的元素。
+
+$("[href$='.jpg']") // 选取所有 href 值以 ".jpg" 结尾的元素。
+
+jQuery CSS 选择器
+jQuery CSS 选择器可用于改变 HTML 元素的 CSS 属性。
+
+下面的例子把所有 p 元素的背景颜色更改为红色：
+
+实例
+$("p").css("background-color","red");
+```
+### 4.6.4 JS 发送 POST 请求
+```JavaScript
+$(function () {
+    $("#sendBtn").click(send_letter); // 选择元素 ID 为 sendBtn 的元素，设定点击事件为 send_letter
+    $(".close").click(delete_msg);
+});
+
+function send_letter() {
+    $("#sendModal").modal("hide");
+    var toName = $("#recipient-name").val(); // 获取元素 ID 为 recipient-name 的值
+    var content = $("#message-text").val();
+
+    $.post(         // POST 的方法有三个内容：请求地址，请求参数，回调函数（返回请求结果数据）
+        CONTEXT_PATH + "/message/send",
+        {"toName": toName, "content": content},
+        function (data) {
+            data = $.parseJSON(data);   // 字符串转为 JSON 对象
+            if (data.code === 0) {
+                $("#hintBody").text("发送消息成功 To: " + toName);
+            } else {
+                $("#hintBody").text(data.msg + data.data);
+            }
+
+            $("#hintModal").modal("show");
+
+            setTimeout(function () {
+                $("#hintModal").modal("hide");
+                location.reload();  // 刷新当前页面
+            }, 2000);
+        }
+    );
+}
+```
+
+### 4.7 设置消息已读

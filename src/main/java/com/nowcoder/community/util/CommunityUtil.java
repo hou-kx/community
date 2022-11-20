@@ -1,10 +1,12 @@
 package com.nowcoder.community.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nowcoder.community.entity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -55,6 +57,17 @@ public class CommunityUtil {
         return json.toJSONString();
     }
 
+    /**
+     * 重载，保存对象
+     */
+    public static String getJSONString(int code, String msg, Object obj) {
+        JSONObject json = new JSONObject();
+        json.put("code", code);
+        json.put("msg", msg);
+        json.put("data", obj);
+        return json.toJSONString();
+    }
+
     public static String getJSONString(int code, String msg) {
         return getJSONString(code, msg, null);
     }
@@ -69,5 +82,9 @@ public class CommunityUtil {
         map.put("age", 18);
         map.put("sex", "女");
         System.out.println(getJSONString(100, "获取JSON", map));
+        User user = new User();
+        user.setUsername("西瓜刺客");
+        user.setCreateTime(new Date());
+        System.out.println(getJSONString(101, "放入 User", user));
     }
 }

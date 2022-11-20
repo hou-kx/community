@@ -43,6 +43,9 @@ public class UserService implements CommunityConstant {
     @Autowired
     private LoginTicketMapper ticketMapper;
 
+    /**
+     * 获取当前域名
+     */
     private String getDomain() {
 
         final Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -58,10 +61,16 @@ public class UserService implements CommunityConstant {
         return hostAddress + ":";
     }
 
+    /**
+     * 通过 Id 查询用户
+     */
     public User findUserById(int id) {
         return userMapper.selectById(id);
     }
 
+    /**
+     * 注册
+     */
     public Map<String, Object> register(User user) {
         Map<String, Object> map = new HashMap<>();
 
@@ -120,6 +129,9 @@ public class UserService implements CommunityConstant {
         return map;
     }
 
+    /**
+     * 激活账号
+     */
     public int activation(int userId, String code) {
         User user = userMapper.selectById(userId);
         if (user.getStatus() == 1) {
@@ -199,9 +211,6 @@ public class UserService implements CommunityConstant {
 
     /**
      * 查询 LoginTicket
-     *
-     * @param ticket
-     * @return
      */
     public LoginTicket findLoginTicket(String ticket) {
         return ticketMapper.selectByTicket(ticket);
@@ -229,5 +238,12 @@ public class UserService implements CommunityConstant {
     public int updatePassword(int userId, String password, String salt) {
         password = CommunityUtil.md5(password + salt);
         return userMapper.updatePassword(userId, password);
+    }
+
+    /**
+     * 通过 名称 查询用户
+     */
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
     }
 }

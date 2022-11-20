@@ -12,7 +12,7 @@
     </sql>
 
     <select id="selectConversations" resultType="Message">
-        select <include refid="selectFields"></include>
+        select <include refid="selectFields"/>
         from message
         where id in (
             select max(id)
@@ -34,11 +34,11 @@
                 and from_id != 1
                 and (from_id = #{userId} or to_id = #{userId})
                 group by conversation_id
-        )as m
+        ) as m
     </select>
 
     <select id="selectLetters" resultType="Message">
-        select <include refid="selectFields"></include>
+        select <include refid="selectFields"/>
             from message
             where status != 2
             and from_id != 1
@@ -60,17 +60,17 @@
             from message
             where status = 0
             and from_id != 1
-            and (from_id = #{userId} or to_id = #{userId})
+            and to_id = #{userId}
             <if test="conversationId != null">
                 and conversation_id = #{conversationId}
             </if>
     </select>
     <!-- keyProperty 指定自增字段 -->
     <insert id="insertMessage" parameterType="Message" keyProperty="id">
-        insert into message(<include refid="insertFields"></include>)
+        insert into message(<include refid="insertFields"/>)
         values (#{fromId}, #{toId}, #{conversationId}, #{content}, #{status}, #{createTime})
     </insert>
-    <!-- foreach 遍历集合元素item，左边 '(' 中间元素以 ',' 分割，以')'结束遍历 -->
+    <!-- foreach 遍历集合元素item，左边open '(' 中间元素以 ',' 分割，close 以')'结束遍历 -->
     <update id="updateStatus">
         update message set status = #{status}
         where id in

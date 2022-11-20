@@ -5,35 +5,29 @@ package com.nowcoder.community.util;
  */
 public interface CommunityConstant {
     /**
-     * 激活成功
+     * 0-激活成功；1-重复激活；2-激活失败
      */
     int ACTIVATION_SUCCESS = 0;
-    /**
-     * 重复激活
-     */
     int ACTIVATION_REPEAT = 1;
-    /**
-     * 激活失败
-     */
     int ACTIVATION_FAILURE = 2;
     /**
-     * 默认登录凭证存活时间
+     * 默认登录凭证存活时间； 勾选记住我的登录凭证存活时间
      */
     int DEFAULT_EXPIRED_SECONDS = 3600 * 12;
-    /**
-     * 勾选记住我转态，登录凭证存活时间
-     */
     int REMEMBER_ME_EXPIRED_SECONDS = 3600 * 24 * 10;
 
     String PARAM_EMPTY_MSG = "Parameter is empty!";
 
     /**
-     * 实体类型：帖子
+     * 实体类型：帖子 1; 评论 2；
      */
     int ENTITY_TYPE_POST = 1;
-    /**
-     * 实体类型：评论
-     */
     int ENTITY_TYPE_COMMENT = 2;
 
+    /**
+     * 未读消息 0；已读消息 1；删除消息 2；
+     */
+    int MESSAGE_STATUS_UNREAD = 0;
+    int MESSAGE_STATUS_READ = 1;
+    int MESSAGE_STATUS_DELETED = 2;
 }
