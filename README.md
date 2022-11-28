@@ -49,7 +49,7 @@ Spring手册，可以访问(https://Spring.io)
 
 **Spring boot** 起步依赖、自动配置、端点监控
 
-![截图](./bak/resource/p01.png)
+![截图](./bak/ReadMeImg/p01.png)
 
 解压，Idea打开，创建成功后，运行成功，在浏览器(http://localhost:8080)
 
@@ -394,6 +394,19 @@ git push origin --tags  # 推送所有：
 - 两者之间的关系则是，release基于tag，为tag添加更丰富的信息，一般是编译好的文件。
 创建tag
 
+### 2.5.10 git 设置忽略文件或者忽略问价下的内容
+- 首先根目录下是否有 `.gitignore` 文件 若没有，在git Bash 中进行创建：`touch .gitignore`
+- 对该文件进行编辑，实际就是 git 忽略文件或文件夹的规则配置
+  ```
+  /target/ 过滤文件设置，表示过滤这个文件夹
+  *.mdb  ，*.ldb  ，*.sln 表示过滤某种类型的文件
+  /mtk/do.c ，/mtk/if.h  表示指定过滤某个文件下具体文件
+  !*.c , !/dir/subdir/     !开头表示不过滤
+  *.[oa]    支持通配符：过滤repo中所有以.o或者.a为扩展名的文件
+  ```
+- 想要忽略 `uploadFile/pic` 下所有的文件，直接添加 `upload/pic/` 就好
+- 不用关注前面的路径如何，只要符合这个路径都忽略！
+
 # 3 登录注册功能
 
 ## 3.1 用户注册
@@ -529,7 +542,7 @@ git push origin --tags  # 推送所有：
   - 显示标题、作者、发布时间、帖子正文等内容
 
 ## 4.4 事务管理
-![](bak/resource/TransactionTemplate.png))
+![](bak/ReadMeImg/TransactionTemplate.png)
 <br>
 ### @Transactional
 
@@ -648,4 +661,19 @@ function send_letter() {
 }
 ```
 
-### 4.7 设置消息已读
+## 4.7 设置消息已读
+访问私信详情页时，未读设为已读
+
+# 5 统一处理
+## 5.1 统一处理异常
+**控制器通知，@ControllerAdvice** 在控制器出现异常的时候进行处理
+
+## 5.2 统一处理日志
+**拦截器 HandlerInterpretor** 在控制器请求时进行处理
+而 **我们的日志功能** 贯穿整个系统的各个模块，这里就想到了 ``Spring 中的 AOP 特性`` 进行拆分出去了
+### 5.2.1 AOP Aspect 
+这里抽离出来 **权限检查、记录日志、事务管理** 贯穿于系统的其他模块，进行同一的处理
+<!-- ![](bak/ReadMeImg/AOP.jpg) -->
+<div align="center">
+<img src=./bak/ReadMeImg/AOP.jpg width=60%/>
+</div>

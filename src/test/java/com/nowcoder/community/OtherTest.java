@@ -15,7 +15,7 @@ import java.util.List;
 @SpringBootTest
 public class OtherTest implements Runnable {
 
-    @Value("E:/work/Java/community/bak/resource/upload/pic")
+    @Value("E:/work/Java/community/resource/uploadFile/pic")
     private String uploadPath;
 
     public static void main(String[] argv) {

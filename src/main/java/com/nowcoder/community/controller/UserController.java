@@ -86,7 +86,7 @@ public class UserController {
             logger.info("创建文件夹成功：" + dest.getAbsolutePath());
         }
 
-        // 4. 文件实际存放路径 E:/work/Java/community/resource/uploadFile/pic
+        // 4. 文件实际存放路径 E:/work/Java/community/resource/uploadFile/pic/{imgName}
         dest = new File(dest.getAbsolutePath() + "/" + filename);
 
         try {
@@ -98,16 +98,17 @@ public class UserController {
 
         // 5. 更新用户头像数据
         User user = hostHolder.getUser();
-        // E:/work/Java/community/bak/resource/upload/pic ==>
-        // 这里是图片的访问路径，上面的是图片的存储路径
+        //  E:/work/Java/community/resource/uploadFile/pic ==>
+        // 这里 newHeaderUrl 是图片的访问路径就是链接，根据 GET 请求访问路径，然后再转换为存储路径找到图片的存储位置，返回图片
         String newHeaderUrl = domain + contexPath + "/user/header/" + filename;
         userService.updateHeader(user.getId(), newHeaderUrl);
         return "redirect:/index";
     }
 
     /**
-     * <img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;"> 这里请求
-     * 路径不是瞎填的，E:/work/Java/community/bak/resource/upload/pic 所示是
+     * <img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;"> 这里请求，图片实在该链接中请求返回的
+     * 路径不是瞎填的， domain + contextPath + "/user/header/" + {fileName} 才是图片的访问路径，通过请求访问存储路径，返回图片
+     *  E:/work/Java/community/resource/uploadFile/pic 下的是实际存储路径
      *
      * @param fileName
      * @param response
