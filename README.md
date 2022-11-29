@@ -405,7 +405,8 @@ git push origin --tags  # 推送所有：
   *.[oa]    支持通配符：过滤repo中所有以.o或者.a为扩展名的文件
   ```
 - 想要忽略 `uploadFile/pic` 下所有的文件，直接添加 `upload/pic/` 就好
-- 不用关注前面的路径如何，只要符合这个路径都忽略！
+- 不用关注前面的路径如何，只要符合这个路径都忽略
+- **如想要上传被忽略的文件格式** 直接使用 `git add -f [fileName or directory]`
 
 # 3 登录注册功能
 
@@ -671,9 +672,30 @@ function send_letter() {
 ## 5.2 统一处理日志
 **拦截器 HandlerInterpretor** 在控制器请求时进行处理
 而 **我们的日志功能** 贯穿整个系统的各个模块，这里就想到了 ``Spring 中的 AOP 特性`` 进行拆分出去了
-### 5.2.1 AOP Aspect 
+### 5.2.1 AOP Aspect Oriented Programing
+是对 OOP 思想的补充，如图，横穿多个业务组件（target），抽离出来单独封装到 Aspect 组件中
 这里抽离出来 **权限检查、记录日志、事务管理** 贯穿于系统的其他模块，进行同一的处理
 <!-- ![](bak/ReadMeImg/AOP.jpg) -->
 <div align="center">
 <img src=./bak/ReadMeImg/AOP.jpg width=60%/>
 </div>
+
+1. AOP 编程思想中，方面或者切片组件 Aspect 通过 Weaving 织入业务组件 target 中
+   1. 织入的位置 JoinPoint 有以下：
+      1. 属性
+      2. 构造器中
+      3. 方法中等
+   2. 织入的方式分为：
+      1. 编译时织入，需要特殊的编译器
+      2. 装载中织入，需要使用特殊的类装载器
+      3. 运行时织入，为目标生成代理对象
+2. AOP的实现
+   1.  AspectJ 
+       -  一种基于 Java 二次开发的语言级的实现，扩展了 Java 定义了 AOP 语法
+       - 支持多种 JoinPoint 编译期织入，有专门的编译器，生成村收 Java 字节码规范的 class 文件
+   2. Spring AOP 
+      - 纯 Java 实现，不要专门编译过程和编译器
+      - 通过代理的方式织入，仅支持方法的 JointPoint 连接点
+      - 支持对 AspectJ 的集成
+3. Spring AOP
+   - ![](bak/ReadMeImg/SpringAOP.png)
