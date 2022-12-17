@@ -448,7 +448,8 @@ git push origin --tags  # 推送所有：
     <version>2.3.2</version>
 </dependency>
 
-<!--可以看到这里 这里并没有 spring 标识 说明就是一个额外的小工具，需要自己对他进行配置，配置类，然后导入到spring容器中，由spring容器加载使用-->
+<!--可以看到这里 这里并没有 spring 标识 说明就是一个额外的小工具，
+      需要自己对他进行配置，配置类，然后导入到spring容器中，由spring容器加载使用-->
 ```
 
 ## 3.4 登录、退出功能
@@ -699,3 +700,327 @@ function send_letter() {
       - 支持对 AspectJ 的集成
 3. Spring AOP
    - ![](bak/ReadMeImg/SpringAOP.png)
+### 5.2.1 AOP 实际使用
+根据上面的内容我们可以知道，实际业务组件和切片组件是相互隔离的，则这里单独创建一个切面组件。并交由 Sprig 管理：
+```Java
+/**
+  * 这里定义一个切面组件，@Component 声明为 Bean 交由 Spring 管理
+  * @Aspect 注解表示这是一个切面组件
+  */
+@Component    // 注释掉后，spring 就不会加载
+@Aspect
+public class AlphaAspect {
+  /**
+     * 使用 @Pointcut 注解，指定生效的业务组件的范围，execution 是其的一个关键字，第一个参数表示所有的返回值
+     * 第二个参数中的第一个 * 表示 service 下所有的 service 第二个 * 表示组件中所有的方法
+     * 括号中的 .. 表示所有的参数
+     * 以上都可以指定对应的特定值
+     */
+    @Pointcut("execution(* com.nowcoder.community.service.*.*(..))")
+    public void pointcut() {
+
+    }
+
+    /**
+     * 1、连接点的一开始 @Before
+     * 2、连接点之后运行 @After
+     * 3、返回之后运行 @AfterReturning
+     * 4、抛出异常的时候运行 @AfterReturning
+     * 5、在之前之后都执行 @Around
+     */
+    @Before("pointcut()")
+    public void before() {
+        System.out.println("before!");
+    }
+
+    @After("pointcut()")
+    public void after() {
+        System.out.println("after");
+    }
+
+    @AfterReturning("pointcut()")
+    public void afterReturning() {
+        System.out.println("afterReturning");
+    }
+
+    @AfterThrowing("pointcut()")
+    public void afterThrowing() {
+        System.out.println("afterThrowing");
+    }
+
+    /**
+     * 这里实际上就是，joinPoint 就是值得连接点，或者说组件执行到的位置（方法），这里使用了一种代理的方式进行执行
+     * joinPoint.proceed() 即执行目标的方法函数，会有返回值，则这里返回即可
+     * around（） 当本 aspect 通过代理实现的时候这里，实际就是通过，调用.proceed() 代理的调用原来目标对象的方法，
+     * 而在调用的前后执行这里的一个操作！
+     */
+    @Around("pointcut()")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("around before");
+        Object obj = joinPoint.proceed();
+        System.out.println("around after");
+        return obj;
+    }
+    
+}
+```
+
+# 6 Redis  (redis.io)
+- **Redis** 是一种存储在**内存中**基于**键值对**的**NoSQL**数据库！
+- 微软提供了windos 版的包(github.com/microsoftarchive/redis)
+<br>
+![](bak/ReadMeImg/redis01.png)
+
+- Redis 内置了 16 个数据库 使用 ``select index`` 0-15 来选择
+- 0123456789
+```shell
+# 安装 redis win 版 msi 微软提供的版本 3.2.100
+# 添加环境变量之后，在 CMD 中 使用: 
+c:\> redis-cli 
+127.0.0.1:6379>
+
+# 内置 16 个 database 使用 select 进行切换
+127.0.0.1:6379> select 1
+OK
+127.0.0.1:6379[1]>
+
+# 可以使用 flushdb 对 Redis 数据库进行清空
+```
+
+## 6.1 Redis 支持的数据类型
+### 6.1.1 String or Integer
+set 既可以是数字也可以是字符串，可以用于常规的计数，粉丝数，关注数等
+```shell
+# redis 是键值对数据库，键， 值 String，超时时间 时间单位
+# set key value [EX seconds] [PX milliseconds] [NX|XX]
+127.0.0.1:6379[11]> set test:count 1
+OK
+# 获取就是 get 可以看到是一个 string
+127.0.0.1:6379[11]> get test:count
+"1"
+# 使用 incr 实际为 increase
+127.0.0.1:6379[11]> incr test:count
+(integer) 2
+# decr 实际为 decrease
+127.0.0.1:6379[11]> get test:count
+"2"
+127.0.0.1:6379[11]> 
+```
+### 6.1.2 Hashes
+哈希是一个 String key 和 value 的映射表 or 称之为键值对的集合
+```shell
+# hset key field value
+# hset 键 hash键 hash值
+127.0.0.1:6379[11]> hset test:user username zhangsan
+(integer) 1
+127.0.0.1:6379[11]> hget test:user username
+"zhangsan"
+127.0.0.1:6379[11]>
+```
+### 6.1.3 list
+列表是一个横向的容器，可以两端存取，实现栈和队列，可以实现类似最新回复这种功能
+```shell
+127.0.0.1:6379[11]> lpush user:ids 101 102 103
+(integer) 3
+127.0.0.1:6379[11]> llen user:ids
+(integer) 3
+127.0.0.1:6379[11]> lindex user:ids 0
+"103"
+127.0.0.1:6379[11]> lrange user:ids 0 2
+1) "103"
+2) "102"
+3) "101"
+# 从右边出一个数据
+127.0.0.1:6379[11]> rpop user:ids
+"101"
+127.0.0.1:6379[11]> lrange user:ids 0 2
+1) "103"
+2) "102"
+```
+### 6.1.4 set
+无序集合，可以使用 spop 随机弹出一个元素实现抽奖，提供了并、交等集合操作，求共同好友，共同关注功能
+```shell
+127.0.0.1:6379[11]> sadd test:teacher aaa bbb ccc ddd eee
+(integer) 5
+127.0.0.1:6379[11]> SCARD test:teacher
+(integer) 5
+127.0.0.1:6379[11]> spop test:teacher
+"eee"
+# 列出集合中所有的元素
+127.0.0.1:6379[11]> smembers test:teacher
+1) "bbb"
+2) "ccc"
+3) "ddd"
+4) "aaa"
+# 随机弹出两个元素
+127.0.0.1:6379[11]> spop test:teacher 2
+1) "ddd"
+2) "aaa"
+```
+### 6.1.5 sort set
+有序集合，实际就是给每个元素赋予了一个分数，适合用于排行榜和带权重的消息队列
+```shell
+127.0.0.1:6379[11]> zadd key [NX|XX] [CH] [INCR] score member [score member ...]
+127.0.0.1:6379[11]> zadd test:students 10 sss 20 ttt 30 uuu 40 ddd 50 eee 60 nnn 70 ttt
+(integer) 6
+# 集合元素个数
+127.0.0.1:6379[11]> zcard test:students
+(integer) 6
+# 查看集合中某个元素的分值
+127.0.0.1:6379[11]> zscore test:students uuu
+"30"
+# 查看集合中元素的排名 默认由小到大 0-s 1-t 2-u 3-d 4-e 5-n
+# 但当再次赋值 70 ttt 时 被覆盖此时为 0-sss 1-uuu 2-ddd 3-eee 4-nnn 5-ttt
+127.0.0.1:6379[11]> zrank test:students nnn
+(integer) 4
+127.0.0.1:6379[11]> zrange test:students 1 3
+1) "uuu"
+2) "ddd"
+3) "eee"
+```
+### 6.1.6 other data type
+- bitmap
+- hyperloglog
+- geospatial
+### 6.1.7 Other commands
+```shell
+# 查看数据类型
+127.0.0.1:6379[11]> type test:students
+zset
+# 是否存在键，是-1 否-0
+127.0.0.1:6379[11]> exists test:students
+(integer) 1
+# 删除数据
+127.0.0.1:6379[11]> del test:students
+(integer) 1
+127.0.0.1:6379[11]> exists test:students
+(integer) 0
+# 设置有效期，单位秒
+127.0.0.1:6379[11]> expire test:user 10
+(integer) 1
+# 设置完立即查看依然存在
+127.0.0.1:6379[11]> keys *
+1) "test:user"
+2) "test:count"
+3) "test:teacher"
+4) "user:ids"
+# 间隔一段时间后在查看，test：user 已经失效删掉了
+127.0.0.1:6379[11]> keys *
+1) "test:count"
+2) "test:teacher"
+3) "user:ids"
+# 可以进行模式匹配
+127.0.0.1:6379[11]> keys test:*t*
+1) "test:count"
+2) "test:teacher"
+```
+## 6.2 Spring 整合 Redis
+
+![](bak/ReadMeImg/redis02.png)
+
+```xml
+<!-- 这里 在 POM.xml 里添加 springBoot redis 依赖-->
+<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+
+<!-- 并不需要指定版本，在pom 依赖的父类 配置 spring-boot-starter-parent 的父类 
+      spring-boot-dependencies 中实际默认配置了一些依赖包的版本且是已经经过测试兼容的 -->
+```
+<br>
+
+### 6.2.1 Redis 配置
+1. **Redis 实际上也是数据库，所以这里需要对其在 `application.properties` 中进行配置使用**
+在 `RedisAutoConfiguration` spring 自动配置 Bean 中可以得知，实际 Properities 中对应的是:
+   - ``@EnableConfigurationProperties({RedisProperties.class})``
+
+2. **在 ``application.properties`` 中对应的属性如下：**
+<div align="center">
+<img src=./bak/ReadMeImg/redis03.png width=60%/>
+</div>
+
+3. > 如下可以看到，SpringBoot 整合的默认的键为 Object 类型，我们使用需要重新配置为 Key 为 String
+      ```java
+      public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+          RedisTemplate<Object, Object> template = new RedisTemplate();
+          template.setConnectionFactory(redisConnectionFactory);
+          return template;
+      }
+      ```
+4. 在 ``application.properties`` 中配置 redis：
+    ``` properties
+    # RedisProperties.class
+    Spring.redis.database=11
+    spring.redis.host=localhost
+    spring.redis.port=6379
+    ```
+
+5. 编写配置类，RedisConfig 配置类
+``` Java
+@Configuration
+public class RedisConfig {
+    /**
+     * 这里配置类 Bean ，使用 Redis key 为 String； key 为 Object
+     * 因为 Redis 也是数据库，所以使用也需要建立连接，所以这里需要连接工厂类来实现，建立数据库连接
+     */
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory); // 此时有了连接数据库的能力
+        // 这里实际主要配置的序列化的方式，程序中是 Java 的数据，存到 Redis 中，要把 Java 对象保存起来实际就是对其进行序列化
+        template.setKeySerializer(RedisSerializer.string());
+        template.setValueSerializer(RedisSerializer.json());
+        template.setHashKeySerializer(RedisSerializer.string());
+        template.setHashValueSerializer(RedisSerializer.json());
+        // 设置完毕，调用下面方法进行生效
+        template.afterPropertiesSet();
+        return template;
+    }
+}
+```
+6. 编写测试类，测试整合 Redis 操作
+![](bak/ReadMeImg/redis04.png)
+7. 多次访问同一个 Redis key 时可以采用绑定的方式来解决
+   ```java
+    @Test
+    public void testBoundOperations() {
+        String redisKey = "test:count";
+        // BoundHashOperations; BoundListOperations; BoundSetOperations; BoundZSetOperations;
+        BoundValueOperations operations = redisTemplate.boundValueOps(redisKey);
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        System.out.println(operations.get());
+    }
+   ```
+
+## 6.3 Redis 事务
+### 6.3.1 Redis 事务
+1. **概念**
+   - Redis 也是支持事务的，但是其并不能满足数据库的 ACID 的特性，
+   - Redis 事务中的命令并不会立即执行而是先放进一个队列里
+   - 当最终提交事务的时候，整体提交给 Redis 服务器一起执行
+   - 这就带来了一个问题，在事务中间，执行查询语句，无法查询当前事务中对数据的更改
+  
+2. **Redis 也支持事务**：声明式事务、编程式事务；
+     - 由于其事务的特性一般情况不使用声明式事务操作
+
+
+## 6.4 Redis 实现点赞功能
+
+1. 点赞
+   -  支持对帖子，评论点赞
+   -  第一次点赞，第二次显示取消点赞
+2. 首页点赞数量
+   - 统计帖子点赞数量
+3. 详情页点赞数量
+   - 统计点赞数量，显示点赞状态
+![](bak/ReadMeImg/redis05.png)
+
+## 6.5 Redis 存储过程
+**这里存储类似 Map 操作，不在构建数据访问层 -》 业务层 调用 Redis Template**

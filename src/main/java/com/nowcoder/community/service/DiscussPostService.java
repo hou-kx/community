@@ -60,11 +60,11 @@ public class DiscussPostService {
     /**
      *
      * @param id 帖子的ID
-     * @param comment 帖子的评论数
+     * @param commentCount 帖子的评论数
      * @return
      */
-    public int updateCommentCount(int id, int comment){
-        return discussPostMapper.updateCommentCount(id, comment);
+    public int updateCommentCount(int id, int commentCount){
+        return discussPostMapper.updateCommentCount(id, commentCount);
     }
 
 }

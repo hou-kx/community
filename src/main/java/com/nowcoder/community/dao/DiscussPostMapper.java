@@ -37,5 +37,5 @@ public interface DiscussPostMapper {
     /**
      * 修改帖子评论数，添加评论的时候冗余的修改帖子表
      */
-    int updateCommentCount(int id, int CommentCount);
+    int updateCommentCount(int id, int commentCount);
 }
