@@ -2,6 +2,7 @@ package com.nowcoder.community.controller;
 
 import com.nowcoder.community.annotation.LoginRequired;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
@@ -41,6 +42,9 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
 
     /**
@@ -108,7 +112,7 @@ public class UserController {
     /**
      * <img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;"> 这里请求，图片实在该链接中请求返回的
      * 路径不是瞎填的， domain + contextPath + "/user/header/" + {fileName} 才是图片的访问路径，通过请求访问存储路径，返回图片
-     *  E:/work/Java/community/resource/uploadFile/pic 下的是实际存储路径
+     * E:/work/Java/community/resource/uploadFile/pic 下的是实际存储路径
      *
      * @param fileName
      * @param response
@@ -163,4 +167,22 @@ public class UserController {
         return "site/operate-result";
     }
 
+    /**
+     * 个人主页
+     */
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("改用户不存在！");
+        }
+        // 1. 添加用户到模型引擎 model
+        model.addAttribute("user", user);
+        // 2. 用户获得的点赞数量
+        int likeCount = likeService.findUserLikeCount(user.getId());
+        model.addAttribute("likeCount", likeCount);
+
+        // 3. 返回模板
+        return "site/profile";
+    }
 }

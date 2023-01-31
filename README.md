@@ -333,6 +333,8 @@ git config --global user email "nihaohoukx@163.com"
 git init     # 进入项目文件夹，初始化git配置， 创建.git文件
 git status   # 查看状态是红色的
 git add *    # 全部 * 临时加入了本地仓库，没有实际提交 这个时候git status显示是绿色的
+
+git add .    # 一般使用 . 即可
 git commit -m 'test'      # 这一步才是真正的提交(本地) -m 表示这次的提交写一个备注
 git log # 查看提交记录
 ```
@@ -1024,3 +1026,12 @@ public class RedisConfig {
 
 ## 6.5 Redis 存储过程
 **这里存储类似 Map 操作，不在构建数据访问层 -》 业务层 调用 Redis Template**
+
+因为操作大部分是基于 key - value 的方式，这里需要一个 key 的生成工具，便于复用 
+
+## 6.6 Redis 实现我收到赞
+1. 重构点赞功能，
+   - 一用户为 key 记录点赞数量
+   - increment(key), decrement(key)
+2. 开发 个人主页
+   - 以用户为key，查询点赞数量
