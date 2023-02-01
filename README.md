@@ -1035,3 +1035,6 @@ public class RedisConfig {
    - increment(key), decrement(key)
 2. 开发 个人主页
    - 以用户为key，查询点赞数量
+
+## 6.7 Redis 实现关注功能
+![](bak/ReadMeImg/followee.png)

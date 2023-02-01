@@ -19,10 +19,11 @@ public interface CommunityConstant {
     String PARAM_EMPTY_MSG = "Parameter is empty!";
 
     /**
-     * 实体类型：帖子 1; 评论 2；
+     * 实体类型：1-帖子 ; 2-评论；3-人(用户)
      */
     int ENTITY_TYPE_POST = 1;
     int ENTITY_TYPE_COMMENT = 2;
+    int ENTITY_TYPE_USER = 3;
 
     /**
      * 未读消息 0；已读消息 1；删除消息 2；
