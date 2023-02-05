@@ -1038,3 +1038,4 @@ public class RedisConfig {
 
 ## 6.7 Redis 实现关注功能
 ![](bak/ReadMeImg/followee.png)
+## 6.8 Redis 实现关注列表、粉丝列表 
