@@ -3,6 +3,7 @@ package com.nowcoder.community.controller.interceptor;
 import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.service.UserServiceV1;
 import com.nowcoder.community.util.CookieUtil;
 import com.nowcoder.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,7 @@ import java.util.Date;
 public class LoginTicketInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private UserService userService;
+    private UserServiceV1 userService;
 
     @Autowired
     private HostHolder hostHolder;

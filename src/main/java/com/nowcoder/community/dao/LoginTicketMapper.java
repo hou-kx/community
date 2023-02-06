@@ -4,6 +4,7 @@ import com.nowcoder.community.entity.LoginTicket;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
+@Deprecated // 不推荐使用，废弃
 public interface LoginTicketMapper {
     // 增删改的方法一般返回的都是整数
 

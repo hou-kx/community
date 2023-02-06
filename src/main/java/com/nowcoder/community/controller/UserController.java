@@ -5,6 +5,7 @@ import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.FollowService;
 import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.service.UserServiceV1;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
@@ -40,7 +41,7 @@ public class UserController implements CommunityConstant {
     private String contexPath;
 
     @Autowired
-    private UserService userService;
+    private UserServiceV1 userService;
 
     @Autowired
     private HostHolder hostHolder;
@@ -164,9 +165,10 @@ public class UserController implements CommunityConstant {
             model.addAttribute("oldPasswordMsg", "密码验证错误，请重新输入！");
             return "site/setting";
         }
-        // 3. 修改密码跳转操作成功页面，并将该用户所有登录凭证失效，重新登录
+        // 3. 修改密码跳转操作成功页面，
         userService.updatePassword(user.getId(), newPassword, user.getSalt());
-        userService.logoutById(user.getId());
+        /** // 并将该用户所有登录凭证失效，重新登录
+        userService.logoutById(user.getId());*/
         model.addAttribute("msg", "密码修改成功！");
         model.addAttribute("target", "/login");
         return "site/operate-result";

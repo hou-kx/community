@@ -98,7 +98,7 @@ Private AlphaDao alphaDao;
 ``@responseBody``注解的作用是将``controller``的方法返回的对象通过适当的转换器转换为指定的格式之后，写入到response对象的body区，通常用来返回JSON数据或者是XML数据。
 
 ## 2.2 Spring MVC
-### 2.2.1 **HTTP**
+### 2.2.1 HTTP
 
 HyperText Transfer Protocol (https://developer.mozilla.org/zh-CN)
 
@@ -255,23 +255,25 @@ select * from user limit 10;
 
 ******
 ## 2.4 项目调试技巧
-### 2.4.1 **响应状态码** 
+### 2.4.1 响应状态码
 (https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status)手册建议
 - **200** 请求成功
 - **302** 3就是跳转重定向，此响应代码表示所请求资源的URI已**暂时**更改。未来可能会对URI进行进一步的改变。
 - **404** Not Found 路径错误，页面
 - **500** 服务器接收到请求，但出现了问题，服务端的程序
 
-### 2.4.2 **服务断点调试**打断点逐行执行，查看数据内同是否有问题
+### 2.4.2 服务断点调试
+打断点逐行执行，查看数据内同是否有问题
 - F8向下执行一行
 - F7进入当前行的方法内部
 - F9运行直到下个断点
 - 断点管理
 
-### 2.4.3 **客户端断点调试**
+### 2.4.3 客户端断点调试
 - 实际就是调试JS，和服务段差不多，就是快捷键不太同，使用的是浏览器调试
 
-### 2.4.4 **设置日志级别，将日志输出到不同的终端**
+### 2.4.4 设置日志级别
+，将日志输出到不同的终端
 (https://logback.qos.ch)
 - **trace - debug - info - warn - error** 配置文件里可以设置显示级别
 - 为了所有方法都可用通常吧日志设置为**静态&不可更改**的finnal方法
@@ -283,7 +285,7 @@ select * from user limit 10;
 - ``logging.level.com.nowcoder.community=debug``
 - ``logging.file.name=E:/shiyan/Java/Cache/nowcoder/community.log``
 
-### 2.4.5 **日志详细设置** 
+### 2.4.5 日志详细设置
 在resource根目录先建一个``logback-spring.xml``来存放日志相关的文件，必须是这个名字Spring Boot才能检测到，不然默认没有
 ```xml
     <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -599,7 +601,7 @@ git push origin --tags  # 推送所有：
 >   > - 返回数据类型为 json，所以必须用 @ResponseBody 注解。
 >   > - 而有些异步请求返回的 jsp、html, 如 load()方法请求返回的内容就不是 json 数据
 > - 此时 controller 映射的方法上就不能适应 @ResponseBody 注解了，否则会映射不到请求路径！
-### 4.6.3  ```== 代表相同， ===代表严格相同```
+### 4.6.3  == 代表相同， ===代表严格相同
 ### 4.6.4 JS 选择器
 - JS 中，**#** 是 CSS 中元素的 ID 选择器，用于选定某个元素控件
 ```JS
@@ -1038,4 +1040,19 @@ public class RedisConfig {
 
 ## 6.7 Redis 实现关注功能
 ![](bak/ReadMeImg/followee.png)
-## 6.8 Redis 实现关注列表、粉丝列表 
+## 6.8 Redis 实现关注列表、粉丝列表
+<div align="left">
+<img src=bak/ReadMeImg/followerList.png width=55%/>
+</div>
+
+**分页功能**
+
+## 6.9 Redis 优化登录模块
+<div align="left">
+<img src=bak/ReadMeImg/redisLogin.png width=80%/>
+</div>
+
+**解决的问题：**
+  1. 之前存储在 Session 中，Redis 解决了分布式下 Session 共享的问题
+  2. 存储登录凭证，每次业务都需要查询登录凭证，从 MySQL 转储到 Redis 中加快了查询效率
+  3. 存储用户信息，设置有效期，到期释放
